@@ -7,7 +7,7 @@ Proyecto de `Particle Swarm Optimization (PSO)` con arquitectura modular, estrat
 - `core/`
   Motor PSO, configuracion, tipos, resultados y wrappers de compatibilidad.
 - `objectives/`
-  Funciones objetivo disponibles: `sphere`, `ackley`, `rastrigin`, `rosenbrock`, `sleepy_sphere`.
+  Funciones objetivo disponibles: `sphere`, `sleepy_sphere`, `ackley`, `rastrigin`, `rosenbrock`.
 - `parallel/`
   Estrategias seleccionables: `sequential`, `thread`, `process`, `asyncio`, `numpy`.
 - `experiments/`
@@ -15,9 +15,9 @@ Proyecto de `Particle Swarm Optimization (PSO)` con arquitectura modular, estrat
 - `io/`
   Persistencia centralizada de `result.json/yaml`, `summary.json/yaml`, `history.csv`, `flights.jsonl` y tablas agregadas.
 - `viz/`
-  Visualizaciones estaticas y animadas, incluyendo GIF automatico para 2D y 3D.
+  Codigo de visualizacion: renderizado SVG, composicion 2D/3D y exportacion de animaciones.
 - `results/`
-  Artefactos generados por ejecuciones y experimentos.
+  Artefactos generados por las ejecuciones: JSON, YAML, CSV, SVG, HTML y GIF.
 - `tests/`
   Tests del motor, experimentos y runners.
 
@@ -34,7 +34,7 @@ Proyecto de `Particle Swarm Optimization (PSO)` con arquitectura modular, estrat
 - `io/persistence.py`
   Escritura de JSON, YAML, CSV y reportes tabulares.
 - `viz/visualization.py`
-  `convergence.svg`, `swarm_2d.svg` y `animation.gif` para visualizacion 2D y 3D.
+  Funciones que renderizan visualizaciones 2D/3D y exportan artefactos como `convergence.svg`, `swarm_2d.svg`, `swarm_2d.html` y `animation.gif` en `results/`.
 
 ## Estrategias paralelas
 
@@ -87,14 +87,15 @@ python3 make_viz.py --objective ackley --dimensions 3 --birds 20 --flights 40 --
 
 ## Resultados esperados
 
-En `results/<objective>/<mode>/run_000/` pueden aparecer:
+Los archivos de salida se escriben en `results/`. Segun el script, la dimension y las opciones usadas, en `results/<objective>/<mode>/run_000/` pueden aparecer:
 
 - `result.json`, `result.yaml`
 - `history.csv`
 - `flights.jsonl`
 - `convergence.svg`
 - `swarm_2d.svg` si `d=2`
-- `animation.gif` si `d=2` o `d=3`
+- `swarm_2d.html` si `d=2`
+- `animation.gif` si se ejecuta `make_viz.py --export gif` en `d=2` o `d=3`
 
 En `results/<objective>/<mode>/`:
 
@@ -114,10 +115,14 @@ En `results/benchmark_suite/`:
 
 ## Visualizaciones
 
+El paquete `viz/` contiene el codigo de renderizado. Los artefactos visuales se guardan en `results/`.
+
 - `convergence.svg`
   Curva `best fitness vs iteracion`.
 - `swarm_2d.svg`
   Mosaico estatico de snapshots del enjambre 2D.
+- `swarm_2d.html`
+  Vista HTML para la ejecucion 2D cuando se generan assets interactivos.
 - `animation.gif`
   Animacion final del enjambre para `d=2` y `d=3`, con particulas, mejor global y la vista correspondiente de la funcion objetivo.
 
