@@ -9,16 +9,19 @@ from .pso import BirdSwarmOptimizer
 from .results import BenchmarkResult, BenchmarkTimingSummary, EvaluationReport, FlightMetrics, FlightResult
 from .swarm import FlightSnapshot, FlockTreasure, SwarmHistory
 from .types import EVALUATION_MODES, FitnessEvaluator, ObjectiveDefinition
-from .visualization import render_convergence_svg, render_swarm_2d_svg
+from .visualization import render_convergence_svg, render_swarm_2d_svg, write_visualization_artifacts
 from parallel import CrumbEvaluator
 
 __all__ = [
     "ArtifactConfig",
+    "ArtifactWriter",
     "BenchmarkConfig",
     "BenchmarkResult",
     "BenchmarkTimingSummary",
     "BirdParticle",
     "BirdSwarmOptimizer",
+    "compare_benchmark",
+    "grid_search_benchmark",
     "CrumbEvaluator",
     "EVALUATION_MODES",
     "EvaluationReport",
@@ -34,10 +37,8 @@ __all__ = [
     "SwarmConfig",
     "SwarmHistory",
     "Vector",
-    "ArtifactWriter",
-    "compare_benchmark",
-    "grid_search_benchmark",
     "render_convergence_svg",
     "render_swarm_2d_svg",
     "run_benchmark",
+    "write_visualization_artifacts",
 ]

@@ -2,8 +2,9 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from core.benchmark import compare_benchmark, grid_search_benchmark
+from core.benchmark import compare_benchmark, grid_search_benchmark, run_benchmark
 from core.config import ArtifactConfig, BenchmarkConfig, SearchSpaceConfig, SwarmConfig
+from experiments.benchmarks import run_benchmark_suite
 from objectives import get_objective
 
 
@@ -55,6 +56,44 @@ class ExperimentTests(unittest.TestCase):
             self.assertIn("swarm_size", result[0])
             self.assertTrue((output_dir / "sphere" / "grid_search_numpy" / "grid_search.csv").exists())
             self.assertTrue((output_dir / "sphere" / "numpy" / "summary.json").exists())
+            self.assertTrue((output_dir / "sphere" / "numpy" / "run_000" / "swarm_2d.html").exists())
+
+    def test_benchmark_3d_genera_visualizacion_html(self) -> None:
+        with TemporaryDirectory() as temporary_directory:
+            output_dir = Path(temporary_directory)
+            summary = run_benchmark(
+                BenchmarkConfig(
+                    objective=get_objective("sphere"),
+                    swarm=SwarmConfig(birds=8, flights=5, random_seed=4),
+                    search_space=SearchSpaceConfig(dimensions=3, lower_bound=-5.12, upper_bound=5.12),
+                    evaluator_mode="sequential",
+                    repetitions=1,
+                    include_history=True,
+                    artifacts=ArtifactConfig(output_directory=output_dir),
+                )
+            )
+
+            self.assertEqual(summary.mode, "sequential")
+            self.assertTrue((output_dir / "sphere" / "sequential" / "run_000" / "swarm_3d.html").exists())
+            self.assertTrue((output_dir / "sphere" / "sequential" / "run_000" / "swarm_3d_frames" / "frame_000.svg").exists())
+
+    def test_suite_de_benchmarks_genera_resumen(self) -> None:
+        with TemporaryDirectory() as temporary_directory:
+            rows = run_benchmark_suite(
+                objective_names=["sphere"],
+                dimensions=[2],
+                modes=["sequential", "numpy"],
+                birds=6,
+                flights=4,
+                repetitions=1,
+                workers=None,
+                seed=7,
+                output_directory=Path(temporary_directory),
+            )
+
+            self.assertEqual(len(rows), 2)
+            self.assertTrue((Path(temporary_directory) / "benchmark_suite" / "summary.csv").exists())
+            self.assertIn("speedup_vs_sequential", rows[0])
 
     def test_benchmark_config_rechaza_workers_no_positivos(self) -> None:
         with self.assertRaisesRegex(ValueError, "workers debe ser positiva"):

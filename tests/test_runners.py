@@ -40,10 +40,10 @@ class RunnerTests(unittest.TestCase):
         self.assertIn("Parque: sphere", process.stdout)
         self.assertIn("Migas en el tesoro:", process.stdout)
 
-    def test_run_benchmark_run_funciona(self) -> None:
+    def test_run_benchmarks_run_funciona(self) -> None:
         with TemporaryDirectory() as temporary_directory:
             process = self._run_command(
-                "run_benchmark.py",
+                "run_benchmarks.py",
                 "run",
                 "--objective",
                 "sphere",
@@ -64,15 +64,13 @@ class RunnerTests(unittest.TestCase):
             self.assertEqual(process.returncode, 0, msg=process.stderr)
             self.assertIn("Modo: sequential", process.stdout)
             self.assertIn("Repeticiones: 1", process.stdout)
-            self.assertTrue(
-                (Path(temporary_directory) / "sphere" / "sequential" / "run_000" / "convergence.svg").exists()
-            )
+            self.assertTrue((Path(temporary_directory) / "sphere" / "sequential" / "run_000" / "convergence.svg").exists())
+            self.assertTrue((Path(temporary_directory) / "sphere" / "sequential" / "run_000" / "swarm_2d.html").exists())
 
-    def test_run_benchmark_grid_search_funciona(self) -> None:
+    def test_run_grid_search_funciona(self) -> None:
         with TemporaryDirectory() as temporary_directory:
             process = self._run_command(
-                "run_benchmark.py",
-                "grid-search",
+                "run_grid_search.py",
                 "--objective",
                 "sphere",
                 "--mode",
@@ -85,10 +83,12 @@ class RunnerTests(unittest.TestCase):
                 "4",
                 "--repetitions",
                 "1",
-                "--grid-birds",
-                "6,8",
                 "--grid-w",
                 "0.5,0.7",
+                "--grid-c1",
+                "1.4,1.8",
+                "--grid-c2",
+                "1.4,1.8",
                 "--grid-seeds",
                 "7,8",
                 "--output-dir",
@@ -98,9 +98,54 @@ class RunnerTests(unittest.TestCase):
             self.assertEqual(process.returncode, 0, msg=process.stderr)
             self.assertIn("'mode': 'sequential'", process.stdout)
             self.assertIn("'seed_count': 2", process.stdout)
-            self.assertTrue(
-                (Path(temporary_directory) / "sphere" / "grid_search_sequential" / "grid_search.csv").exists()
+            self.assertTrue((Path(temporary_directory) / "sphere" / "grid_search_sequential" / "grid_search.csv").exists())
+
+    def test_run_benchmarks_suite_funciona(self) -> None:
+        with TemporaryDirectory() as temporary_directory:
+            process = self._run_command(
+                "run_benchmarks.py",
+                "--objectives",
+                "sphere",
+                "--dimensions",
+                "2",
+                "--modes",
+                "sequential,numpy",
+                "--birds",
+                "6",
+                "--flights",
+                "4",
+                "--repetitions",
+                "1",
+                "--output-dir",
+                temporary_directory,
             )
+
+            self.assertEqual(process.returncode, 0, msg=process.stderr)
+            self.assertIn("'objective': 'sphere'", process.stdout)
+            self.assertTrue((Path(temporary_directory) / "benchmark_suite" / "summary.csv").exists())
+
+    def test_make_viz_genera_frames_y_html(self) -> None:
+        with TemporaryDirectory() as temporary_directory:
+            process = self._run_command(
+                "make_viz.py",
+                "--objective",
+                "sphere",
+                "--mode",
+                "sequential",
+                "--birds",
+                "8",
+                "--dimensions",
+                "3",
+                "--flights",
+                "5",
+                "--output-dir",
+                temporary_directory,
+            )
+
+            self.assertEqual(process.returncode, 0, msg=process.stderr)
+            run_directory = Path(temporary_directory) / "sphere" / "sequential" / "run_000"
+            self.assertTrue((run_directory / "swarm_3d.html").exists())
+            self.assertTrue((run_directory / "swarm_3d_frames" / "frame_000.svg").exists())
 
 
 if __name__ == "__main__":

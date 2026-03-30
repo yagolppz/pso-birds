@@ -9,7 +9,7 @@ from .logging import JsonLinesBirdLogger
 from .persistence import ArtifactWriter
 from .pso import BirdSwarmOptimizer, _swarm_for_repetition, _swarm_with_overrides
 from .results import BenchmarkResult, BenchmarkTimingSummary, FlightResult
-from .visualization import render_convergence_svg, render_swarm_2d_svg
+from .visualization import write_visualization_artifacts
 from parallel import build_fitness_evaluator
 
 
@@ -31,9 +31,7 @@ def run_benchmark(config: BenchmarkConfig) -> BenchmarkResult:
         runs.append(run)
         writer.write_run_artifacts(run, config.objective.name, config.evaluator_mode, repetition)
         if run.history is not None and run_directory is not None and config.artifacts.save_svg_plot:
-            (run_directory / "convergence.svg").write_text(render_convergence_svg(run.history), encoding="utf-8")
-            if config.search_space.dimensions == 2:
-                (run_directory / "swarm_2d.svg").write_text(render_swarm_2d_svg(run.history), encoding="utf-8")
+            write_visualization_artifacts(run_directory, run.history, config.objective, config.search_space)
 
     best_run = min(runs, key=lambda run: run.best_crumbs)
     summary = BenchmarkResult(
@@ -104,7 +102,7 @@ def grid_search_benchmark(
                     evaluator_mode=run_mode,
                     repetitions=config.repetitions,
                     workers=config.workers,
-                    include_history=False,
+                    include_history=config.include_history,
                     artifacts=config.artifacts,
                 )
             )
