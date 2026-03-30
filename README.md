@@ -15,7 +15,7 @@ Proyecto de `Particle Swarm Optimization (PSO)` con arquitectura modular, estrat
 - `io/`
   Persistencia centralizada de `result.json/yaml`, `summary.json/yaml`, `history.csv`, `flights.jsonl` y tablas agregadas.
 - `viz/`
-  Visualizaciones estaticas y animadas, incluyendo frames SVG y HTML reproductor.
+  Visualizaciones estaticas y animadas, incluyendo GIF automatico para 2D y 3D.
 - `results/`
   Artefactos generados por ejecuciones y experimentos.
 - `tests/`
@@ -34,7 +34,7 @@ Proyecto de `Particle Swarm Optimization (PSO)` con arquitectura modular, estrat
 - `io/persistence.py`
   Escritura de JSON, YAML, CSV y reportes tabulares.
 - `viz/visualization.py`
-  `convergence.svg`, `swarm_2d.svg`, frames SVG y HTML animado para 2D y 3D.
+  `convergence.svg`, `swarm_2d.svg` y `animation.gif` para visualizacion 2D y 3D.
 
 ## Estrategias paralelas
 
@@ -81,8 +81,8 @@ python3 run_grid_search.py --objective sphere --mode sequential --dimensions 2 -
 Visualizacion y animaciones:
 
 ```bash
-python3 make_viz.py --objective sphere --dimensions 2 --birds 20 --flights 40 --output-dir results
-python3 make_viz.py --objective ackley --dimensions 3 --birds 20 --flights 40 --output-dir results
+python3 make_viz.py --objective sphere --dimensions 2 --birds 20 --flights 40 --output-dir results --export gif
+python3 make_viz.py --objective ackley --dimensions 3 --birds 20 --flights 40 --output-dir results --export gif
 ```
 
 ## Resultados esperados
@@ -94,8 +94,7 @@ En `results/<objective>/<mode>/run_000/` pueden aparecer:
 - `flights.jsonl`
 - `convergence.svg`
 - `swarm_2d.svg` si `d=2`
-- `swarm_2d_frames/` y `swarm_2d.html` si `d=2`
-- `swarm_3d_frames/` y `swarm_3d.html` si `d=3`
+- `animation.gif` si `d=2` o `d=3`
 
 En `results/<objective>/<mode>/`:
 
@@ -119,14 +118,8 @@ En `results/benchmark_suite/`:
   Curva `best fitness vs iteracion`.
 - `swarm_2d.svg`
   Mosaico estatico de snapshots del enjambre 2D.
-- `swarm_2d_frames/`
-  Frames numerados SVG con contorno de la funcion, particulas y mejor global.
-- `swarm_2d.html`
-  Reproductor HTML animado para los frames 2D.
-- `swarm_3d_frames/`
-  Frames numerados SVG con proyeccion 3D del enjambre y superficie de corte de la funcion.
-- `swarm_3d.html`
-  Reproductor HTML animado para los frames 3D.
+- `animation.gif`
+  Animacion final del enjambre para `d=2` y `d=3`, con particulas, mejor global y la vista correspondiente de la funcion objetivo.
 
 ## Validacion
 
