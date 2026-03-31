@@ -421,11 +421,15 @@ def _render_swarm_surface_left_panel(
     width: int,
     height: int,
 ) -> str:
-    origin_x = width * 0.50
-    origin_y = height * 0.66
-    scale = min(width * 0.19, height * 0.24)
     xy_bounds = (search_space.lower_bound, search_space.upper_bound)
     z_bounds = (grid["z_min"], grid["z_max"])
+    origin_x, origin_y, scale = _fit_surface_projection(
+        grid=grid,
+        xy_bounds=xy_bounds,
+        z_bounds=z_bounds,
+        width=width,
+        height=height,
+    )
     particles: list[str] = []
     assert snapshot.particle_positions is not None
     for position in snapshot.particle_positions:
@@ -463,10 +467,8 @@ def _render_swarm_surface_left_panel(
 
 
 def _render_swarm_3d_left_panel(snapshot: FlightSnapshot, search_space: SearchSpaceConfig, width: int, height: int) -> str:
-    origin_x = width * 0.48
-    origin_y = height * 0.70
-    scale = min(width * 0.38, height * 0.35)
     bounds = (search_space.lower_bound, search_space.upper_bound)
+    origin_x, origin_y, scale = _fit_iso_cube_projection(bounds, width, height)
     axis_points = [
         _project_iso_3d([bounds[0], bounds[0], bounds[0]], bounds, origin_x, origin_y, scale),
         _project_iso_3d([bounds[1], bounds[0], bounds[0]], bounds, origin_x, origin_y, scale),
@@ -502,19 +504,23 @@ def _render_surface_panel(
     height: int,
     subtitle: str | None = None,
 ) -> str:
-    origin_x = width * 0.53
-    origin_y = height * 0.56
-    scale = min(width * 0.17, height * 0.22)
-    surface_subtitle = subtitle or f"f(x, y, z_const) con z_const = {z_slice:.6g}"
-    lines: list[str] = [
-        '<text x="16" y="20" font-size="17" fill="#3f2d1b">Superficie de corte de la funcion</text>',
-        f'<text x="16" y="40" font-size="12" fill="#6e5740">{surface_subtitle}</text>',
-    ]
     x_values = grid["x_values"]
     y_values = grid["y_values"]
     z_values = grid["z_values"]
     z_bounds = (grid["z_min"], grid["z_max"])
     xy_bounds = (search_space.lower_bound, search_space.upper_bound)
+    origin_x, origin_y, scale = _fit_surface_projection(
+        grid=grid,
+        xy_bounds=xy_bounds,
+        z_bounds=z_bounds,
+        width=width,
+        height=height,
+    )
+    surface_subtitle = subtitle or f"f(x, y, z_const) con z_const = {z_slice:.6g}"
+    lines: list[str] = [
+        '<text x="16" y="20" font-size="17" fill="#3f2d1b">Superficie de corte de la funcion</text>',
+        f'<text x="16" y="40" font-size="12" fill="#6e5740">{surface_subtitle}</text>',
+    ]
 
     for row_index, y_value in enumerate(y_values):
         projected_row = [
@@ -532,7 +538,7 @@ def _render_surface_panel(
         points = " ".join(f"{x:.2f},{y:.2f}" for x, y in projected_column)
         lines.append(f'<polyline fill="none" stroke="#b9894f" stroke-width="1" points="{points}" />')
 
-    marker_value = _surface_marker_value(snapshot, z_slice)
+    marker_value = _surface_marker_value(snapshot, z_slice, z_bounds)
     marker_x, marker_y = _project_surface_point(
         snapshot.treasure_position[0],
         snapshot.treasure_position[1],
@@ -548,10 +554,15 @@ def _render_surface_panel(
     return "".join(lines)
 
 
-def _surface_marker_value(snapshot: FlightSnapshot, z_slice: float) -> float:
+def _surface_marker_value(
+    snapshot: FlightSnapshot,
+    z_slice: float,
+    z_bounds: tuple[float, float],
+) -> float:
     if len(snapshot.treasure_position) < 3:
-        return snapshot.treasure_crumbs
-    return snapshot.treasure_crumbs + abs(snapshot.treasure_position[2] - z_slice) * 0.0
+        return max(z_bounds[0], min(z_bounds[1], snapshot.treasure_crumbs))
+    marker_value = snapshot.treasure_crumbs + abs(snapshot.treasure_position[2] - z_slice) * 0.0
+    return max(z_bounds[0], min(z_bounds[1], marker_value))
 
 
 def _render_contour_cells(
@@ -707,12 +718,9 @@ def _project_point_2d(
 
 
 def _project_iso_3d(point: Vector, bounds: tuple[float, float], origin_x: float, origin_y: float, scale: float) -> tuple[float, float]:
-    normalized = [
-        _scale_value(coordinate, bounds[0], bounds[1], -1.0, 1.0)
-        for coordinate in point[:3]
-    ]
-    x_value = origin_x + (normalized[0] - normalized[1]) * scale
-    y_value = origin_y - (normalized[0] + normalized[1]) * scale * 0.45 - normalized[2] * scale
+    projected_x_component, projected_y_component = _iso_project_components(point, bounds)
+    x_value = origin_x + projected_x_component * scale
+    y_value = origin_y + projected_y_component * scale
     return x_value, y_value
 
 
@@ -726,12 +734,98 @@ def _project_surface_point(
     origin_y: float,
     scale: float,
 ) -> tuple[float, float]:
+    projected_x_component, projected_y_component = _surface_project_components(x_value, y_value, z_value, xy_bounds, z_bounds)
+    projected_x = origin_x + projected_x_component * scale
+    projected_y = origin_y + projected_y_component * scale
+    return projected_x, projected_y
+
+
+def _iso_project_components(point: Vector, bounds: tuple[float, float]) -> tuple[float, float]:
+    normalized = [
+        _scale_value(coordinate, bounds[0], bounds[1], -1.0, 1.0)
+        for coordinate in point[:3]
+    ]
+    return normalized[0] - normalized[1], -(normalized[0] + normalized[1]) * 0.45 - normalized[2]
+
+
+def _surface_project_components(
+    x_value: float,
+    y_value: float,
+    z_value: float,
+    xy_bounds: tuple[float, float],
+    z_bounds: tuple[float, float],
+) -> tuple[float, float]:
     normalized_x = _scale_value(x_value, xy_bounds[0], xy_bounds[1], -1.0, 1.0)
     normalized_y = _scale_value(y_value, xy_bounds[0], xy_bounds[1], -1.0, 1.0)
     normalized_z = _scale_value(z_value, z_bounds[0], z_bounds[1], -1.0, 1.0)
-    projected_x = origin_x + (normalized_x - normalized_y) * scale
-    projected_y = origin_y - (normalized_x + normalized_y) * scale * 0.38 - normalized_z * scale * 1.1
-    return projected_x, projected_y
+    return normalized_x - normalized_y, -(normalized_x + normalized_y) * 0.38 - normalized_z * 1.1
+
+
+def _fit_iso_cube_projection(bounds: tuple[float, float], width: int, height: int) -> tuple[float, float, float]:
+    components = [
+        _iso_project_components([x_value, y_value, z_value], bounds)
+        for x_value in bounds
+        for y_value in bounds
+        for z_value in bounds
+    ]
+    return _fit_projected_components(
+        components,
+        width=width,
+        height=height,
+        left_margin=58.0,
+        right_margin=50.0,
+        top_margin=82.0,
+        bottom_margin=66.0,
+        content_padding=24.0,
+    )
+
+
+def _fit_surface_projection(
+    grid: dict[str, object],
+    xy_bounds: tuple[float, float],
+    z_bounds: tuple[float, float],
+    width: int,
+    height: int,
+) -> tuple[float, float, float]:
+    components = [
+        _surface_project_components(x_value, y_value, grid["z_values"][row_index][column_index], xy_bounds, z_bounds)
+        for row_index, y_value in enumerate(grid["y_values"])
+        for column_index, x_value in enumerate(grid["x_values"])
+    ]
+    return _fit_projected_components(
+        components,
+        width=width,
+        height=height,
+        left_margin=52.0,
+        right_margin=42.0,
+        top_margin=78.0,
+        bottom_margin=44.0,
+        content_padding=20.0,
+    )
+
+
+def _fit_projected_components(
+    components: list[tuple[float, float]],
+    width: int,
+    height: int,
+    left_margin: float,
+    right_margin: float,
+    top_margin: float,
+    bottom_margin: float,
+    content_padding: float = 0.0,
+) -> tuple[float, float, float]:
+    min_x = min(point[0] for point in components)
+    max_x = max(point[0] for point in components)
+    min_y = min(point[1] for point in components)
+    max_y = max(point[1] for point in components)
+    available_width = max(1.0, width - left_margin - right_margin - 2.0 * content_padding)
+    available_height = max(1.0, height - top_margin - bottom_margin - 2.0 * content_padding)
+    span_x = max(1e-9, max_x - min_x)
+    span_y = max(1e-9, max_y - min_y)
+    scale = min(available_width / span_x, available_height / span_y)
+    origin_x = left_margin + content_padding + (available_width - span_x * scale) / 2.0 - min_x * scale
+    origin_y = top_margin + content_padding + (available_height - span_y * scale) / 2.0 - min_y * scale
+    return origin_x, origin_y, scale
 
 
 def _expand_axis_bounds(lower: float, upper: float) -> tuple[float, float]:
