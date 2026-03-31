@@ -1,0 +1,71 @@
+mode: "numpy"
+objective_name: "rastrigin"
+repetitions: 1
+best_crumbs_mean: 174.81766325668872
+timings:
+  total_seconds_mean: 0.359122728001239
+  evaluation_seconds_mean: 0.06671875299616659
+  update_seconds_mean: 0.19481037199875573
+  overhead_seconds_mean: 0.0975936030063167
+best_run:
+  best_position:
+    - -3.018090626773575
+    - 0.07008147964325584
+    - -1.2219437910069155
+    - -1.988474208382312
+    - -1.1210609595627408
+    - -1.9848921406824755
+    - 1.0149269659416247
+    - 0.7646861061498768
+    - 0.3415541835626629
+    - 1.8424345088944376
+    - 0.7953344227698897
+    - -1.8293238435555539
+    - -0.09282224991498073
+    - 0.09329704222301793
+    - -1.2018728304718163
+    - 0.00032434121413327244
+    - -0.9582676533908216
+    - -0.7769030112997886
+    - -1.0519049230772093
+    - -0.9571081116785505
+    - 0.9576355167560395
+    - -1.6504826632772147
+    - 0.9873429975465395
+    - -0.9770366776961121
+    - 0.9764796889281822
+    - 1.3044727677648247
+    - 1.9238674348768288
+    - 3.0700247699385934
+    - 1.2557247010688488
+    - 0.9124023684638365
+  best_crumbs: 174.81766325668872
+  flights_completed: 60
+  history: null
+  metrics:
+    total_seconds: 0.359122728001239
+    evaluation_seconds: 0.06671875299616659
+    update_seconds: 0.19481037199875573
+    overhead_seconds: 0.0975936030063167
+  evaluator_mode: "numpy"
+config:
+  objective: "rastrigin"
+  mode: "numpy"
+  workers: null
+  repetitions: 1
+  seeds:
+    - 7
+  search_space:
+    dimensions: 30
+    lower_bound: -5.12
+    upper_bound: 5.12
+    clamp_positions: true
+  swarm:
+    birds: 30
+    flights: 60
+    inertia: 0.7
+    cognitive_weight: 1.7
+    social_weight: 1.7
+    random_seed: 7
+    stop_when_crumbs_below: null
+    velocity_limit_factor: 0.2

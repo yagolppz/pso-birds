@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PSO Birds 2D - ackley</title>
+  <style>
+    body { margin: 0; background: #efe7d6; color: #2d2217; font-family: Georgia, serif; }
+    .page { max-width: 1180px; margin: 0 auto; padding: 24px; }
+    .layout { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; }
+    .panel { background: #fffaf0; border: 1px solid #7c6248; border-radius: 14px; padding: 14px; box-shadow: 0 12px 28px rgba(70, 43, 12, 0.08); }
+    h1, h2 { margin-top: 0; }
+    img { width: 100%; display: block; border-radius: 10px; border: 1px solid #b89f7d; background: #f5efe2; }
+    .controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 12px; }
+    .controls button { border: 1px solid #7c6248; background: #bf5b04; color: #fffaf0; border-radius: 999px; padding: 8px 16px; cursor: pointer; }
+    .controls input { flex: 1; min-width: 240px; }
+    .stats { display: grid; grid-template-columns: repeat(2, minmax(140px, 1fr)); gap: 10px; margin-top: 14px; }
+    .stat { background: #f7f0e4; border: 1px solid #d7c2a5; border-radius: 10px; padding: 10px 12px; }
+    .stat strong { display: block; font-size: 12px; color: #6e5740; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+    .note { color: #6e5740; line-height: 1.4; }
+    @media (max-width: 980px) { .layout { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>PSO Birds 2D - ackley</h1>
+    <div class="layout">
+      <section class="panel">
+        <h2>Animacion 2D</h2>
+        <img id="frame-viewer" src="swarm_2d_frames/frame_000.svg" alt="Frame de la animacion" />
+        <div class="controls">
+          <button id="toggle" type="button">Pausar</button>
+          <input id="frame-slider" type="range" min="0" max="20" value="0" />
+        </div>
+        <div class="stats">
+          <div class="stat"><strong>Vista</strong><span>2D</span></div>
+          <div class="stat"><strong>Vuelo</strong><span id="flight-value">0</span></div>
+          <div class="stat"><strong>Best Fitness</strong><span id="best-value">16.3323</span></div>
+          <div class="stat"><strong>Particulas</strong><span id="particles-value">12</span></div>
+        </div>
+        <p class="note">Frames SVG + reproductor HTML. El fondo incluye un contorno aproximado de la funcion objetivo.</p>
+      </section>
+      <aside class="panel">
+        <h2>Curva de convergencia</h2>
+        <img src="convergence.svg" alt="Curva de convergencia" />
+        <p class="note">La metrica best fitness vs iteracion se mantiene en <code>convergence.svg</code>.</p>
+      </aside>
+    </div>
+  </div>
+  <script>
+    const frames = ["swarm_2d_frames/frame_000.svg", "swarm_2d_frames/frame_001.svg", "swarm_2d_frames/frame_002.svg", "swarm_2d_frames/frame_003.svg", "swarm_2d_frames/frame_004.svg", "swarm_2d_frames/frame_005.svg", "swarm_2d_frames/frame_006.svg", "swarm_2d_frames/frame_007.svg", "swarm_2d_frames/frame_008.svg", "swarm_2d_frames/frame_009.svg", "swarm_2d_frames/frame_010.svg", "swarm_2d_frames/frame_011.svg", "swarm_2d_frames/frame_012.svg", "swarm_2d_frames/frame_013.svg", "swarm_2d_frames/frame_014.svg", "swarm_2d_frames/frame_015.svg", "swarm_2d_frames/frame_016.svg", "swarm_2d_frames/frame_017.svg", "swarm_2d_frames/frame_018.svg", "swarm_2d_frames/frame_019.svg", "swarm_2d_frames/frame_020.svg"];
+    const metadata = [{"flight_number": 0, "best_crumbs": 16.332292915933717, "particles": 12}, {"flight_number": 1, "best_crumbs": 10.563432214076368, "particles": 12}, {"flight_number": 2, "best_crumbs": 7.935624865235043, "particles": 12}, {"flight_number": 3, "best_crumbs": 7.935624865235043, "particles": 12}, {"flight_number": 4, "best_crumbs": 7.935624865235043, "particles": 12}, {"flight_number": 5, "best_crumbs": 5.616375520886653, "particles": 12}, {"flight_number": 6, "best_crumbs": 5.616375520886653, "particles": 12}, {"flight_number": 7, "best_crumbs": 5.616375520886653, "particles": 12}, {"flight_number": 8, "best_crumbs": 5.616375520886653, "particles": 12}, {"flight_number": 9, "best_crumbs": 5.616375520886653, "particles": 12}, {"flight_number": 10, "best_crumbs": 4.620771266761054, "particles": 12}, {"flight_number": 11, "best_crumbs": 3.7833987436737115, "particles": 12}, {"flight_number": 12, "best_crumbs": 3.7833987436737115, "particles": 12}, {"flight_number": 13, "best_crumbs": 3.7833987436737115, "particles": 12}, {"flight_number": 14, "best_crumbs": 2.14913946419474, "particles": 12}, {"flight_number": 15, "best_crumbs": 2.14913946419474, "particles": 12}, {"flight_number": 16, "best_crumbs": 2.14913946419474, "particles": 12}, {"flight_number": 17, "best_crumbs": 2.14913946419474, "particles": 12}, {"flight_number": 18, "best_crumbs": 2.010025148248101, "particles": 12}, {"flight_number": 19, "best_crumbs": 2.010025148248101, "particles": 12}, {"flight_number": 20, "best_crumbs": 1.0210853637806037, "particles": 12}];
+    const viewer = document.getElementById('frame-viewer');
+    const slider = document.getElementById('frame-slider');
+    const toggle = document.getElementById('toggle');
+    const flightValue = document.getElementById('flight-value');
+    const bestValue = document.getElementById('best-value');
+    const particlesValue = document.getElementById('particles-value');
+    let current = 0;
+    let playing = true;
+    let lastStep = 0;
+
+    function render(index) {
+      current = index;
+      viewer.src = frames[index];
+      slider.value = String(index);
+      flightValue.textContent = String(metadata[index].flight_number);
+      bestValue.textContent = Number(metadata[index].best_crumbs).toPrecision(6);
+      particlesValue.textContent = String(metadata[index].particles);
+    }
+
+    slider.addEventListener('input', () => render(Number(slider.value)));
+    toggle.addEventListener('click', () => {
+      playing = !playing;
+      toggle.textContent = playing ? 'Pausar' : 'Reproducir';
+    });
+
+    function tick(timestamp) {
+      if (playing && frames.length > 1 && timestamp - lastStep > 480) {
+        lastStep = timestamp;
+        render((current + 1) % frames.length);
+      }
+      window.requestAnimationFrame(tick);
+    }
+
+    render(0);
+    window.requestAnimationFrame(tick);
+  </script>
+</body>
+</html>

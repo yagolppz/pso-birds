@@ -376,6 +376,92 @@ def render_swarm_3d_frame_svg(
 """
 
 
+def render_swarm_surface_3d_frame_svg(
+    snapshot: FlightSnapshot,
+    objective: ObjectiveDefinition,
+    search_space: SearchSpaceConfig,
+    grid: dict[str, object],
+    width: int = 1180,
+    height: int = 480,
+) -> str:
+    """Renderiza una vista 3D de la funcion 2D con el enjambre sobre la superficie."""
+
+    left_panel_width = 500
+    right_panel_width = 604
+    content_height = height - 112
+    left = _render_swarm_surface_left_panel(snapshot, objective, search_space, grid, width=left_panel_width, height=content_height)
+    right = _render_surface_panel(
+        snapshot,
+        search_space,
+        grid,
+        0.0,
+        width=right_panel_width,
+        height=content_height,
+        subtitle="f(x, y)",
+    )
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">
+  <rect width="{width}" height="{height}" fill="#efe7d6" />
+  <rect x="16" y="16" width="{width - 32}" height="{height - 32}" rx="14" fill="#fffaf0" stroke="#66513a" />
+  <text x="32" y="36" font-size="21" fill="#3f2d1b">Enjambre 3D - vuelo {snapshot.flight_number}</text>
+  <text x="32" y="54" font-size="12" fill="#6e5740">Azul: particulas | Naranja: mejor global</text>
+  <text x="{width - 32}" y="45" text-anchor="end" font-size="13" fill="#6e5740">Best fitness: {snapshot.treasure_crumbs:.6g}</text>
+  <rect x="24" y="68" width="{left_panel_width + 16}" height="{content_height + 12}" rx="12" fill="#f7f0e4" stroke="#cfb899" />
+  <rect x="548" y="68" width="{right_panel_width + 16}" height="{content_height + 12}" rx="12" fill="#f7f0e4" stroke="#cfb899" />
+  <g transform="translate(32, 78)">{left}</g>
+  <g transform="translate(556, 78)">{right}</g>
+</svg>
+"""
+
+
+def _render_swarm_surface_left_panel(
+    snapshot: FlightSnapshot,
+    objective: ObjectiveDefinition,
+    search_space: SearchSpaceConfig,
+    grid: dict[str, object],
+    width: int,
+    height: int,
+) -> str:
+    origin_x = width * 0.50
+    origin_y = height * 0.66
+    scale = min(width * 0.19, height * 0.24)
+    xy_bounds = (search_space.lower_bound, search_space.upper_bound)
+    z_bounds = (grid["z_min"], grid["z_max"])
+    particles: list[str] = []
+    assert snapshot.particle_positions is not None
+    for position in snapshot.particle_positions:
+        surface_value = objective.scalar_function(position[:2])
+        x_value, y_value = _project_surface_point(
+            position[0],
+            position[1],
+            surface_value,
+            xy_bounds,
+            z_bounds,
+            origin_x,
+            origin_y,
+            scale,
+        )
+        particles.append(
+            f'<circle cx="{x_value:.2f}" cy="{y_value:.2f}" r="5.6" fill="#2f6c8f" fill-opacity="0.84" stroke="#163848" stroke-width="1.0" />'
+        )
+    best_x, best_y = _project_surface_point(
+        snapshot.treasure_position[0],
+        snapshot.treasure_position[1],
+        snapshot.treasure_crumbs,
+        xy_bounds,
+        z_bounds,
+        origin_x,
+        origin_y,
+        scale,
+    )
+    return f"""
+  <text x="16" y="20" font-size="17" fill="#3f2d1b">Posiciones del enjambre</text>
+  <text x="16" y="40" font-size="12" fill="#6e5740">Proyeccion isometrica del enjambre sobre f(x, y)</text>
+  {''.join(particles)}
+  <circle cx="{best_x:.2f}" cy="{best_y:.2f}" r="8.8" fill="#e07a1f" stroke="#8b3d09" stroke-width="2.0" />
+  <circle cx="{best_x:.2f}" cy="{best_y:.2f}" r="16" fill="none" stroke="#e07a1f" stroke-width="1.3" stroke-dasharray="4 3" />
+"""
+
+
 def _render_swarm_3d_left_panel(snapshot: FlightSnapshot, search_space: SearchSpaceConfig, width: int, height: int) -> str:
     origin_x = width * 0.48
     origin_y = height * 0.70
@@ -414,13 +500,15 @@ def _render_surface_panel(
     z_slice: float,
     width: int,
     height: int,
+    subtitle: str | None = None,
 ) -> str:
     origin_x = width * 0.53
     origin_y = height * 0.56
     scale = min(width * 0.17, height * 0.22)
+    surface_subtitle = subtitle or f"f(x, y, z_const) con z_const = {z_slice:.6g}"
     lines: list[str] = [
         '<text x="16" y="20" font-size="17" fill="#3f2d1b">Superficie de corte de la funcion</text>',
-        f'<text x="16" y="40" font-size="12" fill="#6e5740">f(x, y, z_const) con z_const = {z_slice:.6g}</text>',
+        f'<text x="16" y="40" font-size="12" fill="#6e5740">{surface_subtitle}</text>',
     ]
     x_values = grid["x_values"]
     y_values = grid["y_values"]
@@ -461,7 +549,7 @@ def _render_surface_panel(
 
 
 def _surface_marker_value(snapshot: FlightSnapshot, z_slice: float) -> float:
-    if len(snapshot.treasure_position) < 2:
+    if len(snapshot.treasure_position) < 3:
         return snapshot.treasure_crumbs
     return snapshot.treasure_crumbs + abs(snapshot.treasure_position[2] - z_slice) * 0.0
 
@@ -677,15 +765,31 @@ def export_animation(
     objective: ObjectiveDefinition | None = None,
     search_space: SearchSpaceConfig | None = None,
 ) -> Path | None:
-    """Exporta la animacion a GIF o MP4 usando frames en memoria cuando sea posible."""
+    """Exporta solo las animaciones finales 2D y 3D, sin alias redundantes."""
 
     if export_format == "none":
         return None
 
-    images = _collect_animation_images(directory, history, objective, search_space)
+    animations, primary_label = _collect_named_animation_images(directory, history, objective, search_space)
+    if not animations:
+        return None
 
+    legacy_path = directory / f"animation.{export_format}"
+    if legacy_path.exists():
+        legacy_path.unlink()
+
+    primary_path: Path | None = None
+    for label, images in animations.items():
+        output_path = directory / f"{label}.{export_format}"
+        _save_animation(images, output_path, export_format)
+        if label == primary_label:
+            primary_path = output_path
+
+    return primary_path
+
+
+def _save_animation(images: list[Image.Image], output_path: Path, export_format: str) -> None:
     if export_format == "gif":
-        output_path = directory / "animation.gif"
         palette_frames = [image.convert("P", palette=Image.ADAPTIVE) for image in images]
         palette_frames[0].save(
             output_path,
@@ -695,7 +799,7 @@ def export_animation(
             loop=0,
             disposal=2,
         )
-        return output_path
+        return
 
     if export_format == "mp4":
         try:
@@ -704,12 +808,68 @@ def export_animation(
         except ModuleNotFoundError as error:
             raise RuntimeError("La exportacion MP4 requiere imageio instalado.") from error
 
-        output_path = directory / "animation.mp4"
         frames = [np.asarray(image.convert("RGB")) for image in images]
         imageio.mimsave(output_path, frames, fps=2)
-        return output_path
+        return
 
     raise ValueError(f"Formato de exportacion desconocido: {export_format}")
+
+
+def _collect_named_animation_images(
+    directory: Path,
+    history: SwarmHistory | None,
+    objective: ObjectiveDefinition | None,
+    search_space: SearchSpaceConfig | None,
+) -> tuple[dict[str, list[Image.Image]], str]:
+    if history is not None and objective is not None and search_space is not None:
+        return _render_named_animation_images(history, objective, search_space)
+
+    frame_paths = _discover_animation_frames(directory)
+    if not frame_paths:
+        raise ValueError("No hay frames generados para exportar animacion.")
+    return {"animation_2d": [_svg_frame_to_image(path) for path in frame_paths]}, "animation_2d"
+
+
+def _render_named_animation_images(
+    history: SwarmHistory,
+    objective: ObjectiveDefinition,
+    search_space: SearchSpaceConfig,
+) -> tuple[dict[str, list[Image.Image]], str]:
+    snapshots = _require_snapshots(history)
+    if search_space.dimensions == 2:
+        _require_2d_snapshots(snapshots)
+        grid = _sample_objective_grid(objective, search_space, fixed_tail=[])
+        return (
+            {
+                "animation_2d": [
+                    _svg_markup_to_image(render_swarm_2d_frame_svg(snapshot, search_space, grid))
+                    for snapshot in snapshots
+                ],
+                "animation_3d": [
+                    _svg_markup_to_image(render_swarm_surface_3d_frame_svg(snapshot, objective, search_space, grid))
+                    for snapshot in snapshots
+                ],
+            },
+            "animation_2d",
+        )
+    if search_space.dimensions == 3:
+        _require_3d_snapshots(snapshots)
+        z_slice = snapshots[-1].treasure_position[2]
+        grid = _sample_objective_grid(objective, search_space, fixed_tail=[z_slice])
+        return (
+            {
+                "animation_2d": [
+                    _svg_markup_to_image(render_swarm_2d_frame_svg(snapshot, search_space, grid))
+                    for snapshot in snapshots
+                ],
+                "animation_3d": [
+                    _svg_markup_to_image(render_swarm_3d_frame_svg(snapshot, search_space, grid, z_slice))
+                    for snapshot in snapshots
+                ],
+            },
+            "animation_3d",
+        )
+    raise ValueError("La exportacion de animaciones solo esta disponible para 2D y 3D.")
 
 
 def _collect_animation_images(
@@ -718,13 +878,8 @@ def _collect_animation_images(
     objective: ObjectiveDefinition | None,
     search_space: SearchSpaceConfig | None,
 ) -> list[Image.Image]:
-    if history is not None and objective is not None and search_space is not None:
-        return _render_animation_images(history, objective, search_space)
-
-    frame_paths = _discover_animation_frames(directory)
-    if not frame_paths:
-        raise ValueError("No hay frames generados para exportar animacion.")
-    return [_svg_frame_to_image(path) for path in frame_paths]
+    animations, legacy_label = _collect_named_animation_images(directory, history, objective, search_space)
+    return animations[legacy_label]
 
 
 def _render_animation_images(
@@ -732,23 +887,8 @@ def _render_animation_images(
     objective: ObjectiveDefinition,
     search_space: SearchSpaceConfig,
 ) -> list[Image.Image]:
-    snapshots = _require_snapshots(history)
-    if search_space.dimensions == 2:
-        _require_2d_snapshots(snapshots)
-        grid = _sample_objective_grid(objective, search_space, fixed_tail=[])
-        return [
-            _svg_markup_to_image(render_swarm_2d_frame_svg(snapshot, search_space, grid))
-            for snapshot in snapshots
-        ]
-    if search_space.dimensions == 3:
-        _require_3d_snapshots(snapshots)
-        z_slice = snapshots[-1].treasure_position[2]
-        grid = _sample_objective_grid(objective, search_space, fixed_tail=[z_slice])
-        return [
-            _svg_markup_to_image(render_swarm_3d_frame_svg(snapshot, search_space, grid, z_slice))
-            for snapshot in snapshots
-        ]
-    raise ValueError("La exportacion de animaciones solo esta disponible para 2D y 3D.")
+    animations, legacy_label = _render_named_animation_images(history, objective, search_space)
+    return animations[legacy_label]
 
 
 def _discover_animation_frames(directory: Path) -> list[Path]:

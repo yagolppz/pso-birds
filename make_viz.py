@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import shutil
 from pathlib import Path
 from pprint import pformat
 
@@ -14,6 +15,17 @@ from core.pso import BirdSwarmOptimizer
 from core.visualization import export_animation, write_visualization_artifacts
 from objectives import OBJECTIVES, get_objective
 from parallel import build_fitness_evaluator
+
+
+def _cleanup_animation_residues(run_directory: Path) -> None:
+    for directory_name in ("swarm_2d_frames", "swarm_3d_frames"):
+        directory_path = run_directory / directory_name
+        if directory_path.exists():
+            shutil.rmtree(directory_path)
+
+    for pattern in ("frame_*.svg", "frame_*.png", "animation.gif", "animation.mp4"):
+        for frame_path in run_directory.glob(pattern):
+            frame_path.unlink()
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -52,6 +64,7 @@ def main() -> None:
         print(f"Visualizaciones escritas en: {run_directory}")
         animation_path = export_animation(run_directory, args.export, result.history, objective, search_space)
         if animation_path is not None:
+            _cleanup_animation_residues(run_directory)
             print(f"Animation saved at: {animation_path}")
     print(f"Modo: {result.evaluator_mode}")
     print(f"Parque: {objective.name}")

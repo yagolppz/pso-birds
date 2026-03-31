@@ -34,7 +34,7 @@ Proyecto de `Particle Swarm Optimization (PSO)` con arquitectura modular, estrat
 - `io/persistence.py`
   Escritura de JSON, YAML, CSV y reportes tabulares.
 - `viz/visualization.py`
-  Funciones que renderizan visualizaciones 2D/3D y exportan artefactos como `convergence.svg`, `swarm_2d.svg`, `swarm_2d.html` y `animation.gif` en `results/`.
+  Funciones que renderizan visualizaciones 2D/3D y exportan artefactos como `convergence.svg`, `swarm_2d.svg`, `animation_2d.gif` y `animation_3d.gif` en `results/`.
 
 ## Estrategias paralelas
 
@@ -94,8 +94,7 @@ Los archivos de salida se escriben en `results/`. Segun el script, la dimension 
 - `flights.jsonl`
 - `convergence.svg`
 - `swarm_2d.svg` si `d=2`
-- `swarm_2d.html` si `d=2`
-- `animation.gif` si se ejecuta `make_viz.py --export gif` en `d=2` o `d=3`
+- `animation_2d.gif` y `animation_3d.gif` si se ejecuta `make_viz.py --export gif` en `d=2` o `d=3`
 
 En `results/<objective>/<mode>/`:
 
@@ -121,10 +120,11 @@ El paquete `viz/` contiene el codigo de renderizado. Los artefactos visuales se 
   Curva `best fitness vs iteracion`.
 - `swarm_2d.svg`
   Mosaico estatico de snapshots del enjambre 2D.
-- `swarm_2d.html`
-  Vista HTML para la ejecucion 2D cuando se generan assets interactivos.
-- `animation.gif`
-  Animacion final del enjambre para `d=2` y `d=3`, con particulas, mejor global y la vista correspondiente de la funcion objetivo.
+- `animation_2d.gif`
+  Vista 2D final del enjambre para `d=2` y `d=3`. En `d=3` corresponde a la proyeccion `x-y` con corte de la funcion.
+- `animation_3d.gif`
+  Vista 3D final del enjambre para `d=2` y `d=3`. En `d=2` muestra la superficie `f(x, y)` y el enjambre proyectado sobre ella.
+- Los frames intermedios no se almacenan en `results/`; las animaciones se renderizan en memoria y el directorio final queda limpio.
 
 ## Validacion
 

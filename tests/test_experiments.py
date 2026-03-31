@@ -56,9 +56,11 @@ class ExperimentTests(unittest.TestCase):
             self.assertIn("swarm_size", result[0])
             self.assertTrue((output_dir / "sphere" / "grid_search_numpy" / "grid_search.csv").exists())
             self.assertTrue((output_dir / "sphere" / "numpy" / "summary.json").exists())
-            self.assertTrue((output_dir / "sphere" / "numpy" / "run_000" / "swarm_2d.html").exists())
+            self.assertTrue((output_dir / "sphere" / "numpy" / "run_000" / "animation_2d.gif").exists())
+            self.assertTrue((output_dir / "sphere" / "numpy" / "run_000" / "animation_3d.gif").exists())
+            self.assertFalse((output_dir / "sphere" / "numpy" / "run_000" / "swarm_2d_frames").exists())
 
-    def test_benchmark_3d_genera_visualizacion_html(self) -> None:
+    def test_benchmark_3d_genera_animation_gif(self) -> None:
         with TemporaryDirectory() as temporary_directory:
             output_dir = Path(temporary_directory)
             summary = run_benchmark(
@@ -74,8 +76,9 @@ class ExperimentTests(unittest.TestCase):
             )
 
             self.assertEqual(summary.mode, "sequential")
-            self.assertTrue((output_dir / "sphere" / "sequential" / "run_000" / "swarm_3d.html").exists())
-            self.assertTrue((output_dir / "sphere" / "sequential" / "run_000" / "swarm_3d_frames" / "frame_000.svg").exists())
+            self.assertTrue((output_dir / "sphere" / "sequential" / "run_000" / "animation_2d.gif").exists())
+            self.assertTrue((output_dir / "sphere" / "sequential" / "run_000" / "animation_3d.gif").exists())
+            self.assertFalse((output_dir / "sphere" / "sequential" / "run_000" / "swarm_3d_frames").exists())
 
     def test_suite_de_benchmarks_genera_resumen(self) -> None:
         with TemporaryDirectory() as temporary_directory:

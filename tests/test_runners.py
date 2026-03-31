@@ -65,7 +65,9 @@ class RunnerTests(unittest.TestCase):
             self.assertIn("Modo: sequential", process.stdout)
             self.assertIn("Repeticiones: 1", process.stdout)
             self.assertTrue((Path(temporary_directory) / "sphere" / "sequential" / "run_000" / "convergence.svg").exists())
-            self.assertTrue((Path(temporary_directory) / "sphere" / "sequential" / "run_000" / "swarm_2d.html").exists())
+            self.assertTrue((Path(temporary_directory) / "sphere" / "sequential" / "run_000" / "animation_2d.gif").exists())
+            self.assertTrue((Path(temporary_directory) / "sphere" / "sequential" / "run_000" / "animation_3d.gif").exists())
+            self.assertFalse((Path(temporary_directory) / "sphere" / "sequential" / "run_000" / "swarm_2d_frames").exists())
 
     def test_run_grid_search_funciona(self) -> None:
         with TemporaryDirectory() as temporary_directory:

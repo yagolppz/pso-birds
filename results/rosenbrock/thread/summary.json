@@ -1,0 +1,81 @@
+{
+  "mode": "thread",
+  "objective_name": "rosenbrock",
+  "repetitions": 1,
+  "best_crumbs_mean": 114.46424284745325,
+  "timings": {
+    "total_seconds_mean": 2.3217289429994707,
+    "evaluation_seconds_mean": 2.0789629890023207,
+    "update_seconds_mean": 0.12886153700856084,
+    "overhead_seconds_mean": 0.11390441698858922
+  },
+  "best_run": {
+    "best_position": [
+      -0.6300102114742347,
+      0.27295772721732164,
+      0.24719745639009125,
+      0.13021432449356615,
+      -0.10095824868843291,
+      -0.000692180507403356,
+      0.01581261009227887,
+      0.009986210525061934,
+      -0.11716160850528318,
+      0.09014232327278768,
+      -0.017781774162016206,
+      -0.006563910264344726,
+      0.09110042668511284,
+      0.018555280226716743,
+      0.23364879726401963,
+      0.07749903650495588,
+      0.08179237442884997,
+      0.03554013475118217,
+      -0.5245435062953331,
+      0.7338066304234976,
+      0.6025615099165625,
+      0.500927824054991,
+      0.15223279045742022,
+      0.19758163483040886,
+      0.3240916141344745,
+      0.09833668279657347,
+      -0.2150718125177581,
+      0.22307572771975417,
+      0.17929721922588965,
+      0.01595172075780813
+    ],
+    "best_crumbs": 114.46424284745325,
+    "flights_completed": 60,
+    "history": null,
+    "metrics": {
+      "total_seconds": 2.3217289429994707,
+      "evaluation_seconds": 2.0789629890023207,
+      "update_seconds": 0.12886153700856084,
+      "overhead_seconds": 0.11390441698858922
+    },
+    "evaluator_mode": "thread"
+  },
+  "config": {
+    "objective": "rosenbrock",
+    "mode": "thread",
+    "workers": null,
+    "repetitions": 1,
+    "seeds": [
+      7
+    ],
+    "search_space": {
+      "dimensions": 30,
+      "lower_bound": -2.048,
+      "upper_bound": 2.048,
+      "clamp_positions": true
+    },
+    "swarm": {
+      "birds": 30,
+      "flights": 60,
+      "inertia": 0.7,
+      "cognitive_weight": 1.7,
+      "social_weight": 1.7,
+      "random_seed": 7,
+      "stop_when_crumbs_below": null,
+      "velocity_limit_factor": 0.2
+    }
+  }
+}
