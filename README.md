@@ -137,3 +137,32 @@ python3 run_grid_search.py
 python3 make_viz.py
 python3 -m unittest discover -s tests -v
 ```
+
+
+## Cumplimiento del enunciado
+
+- PSO base secuencial: [core/pso.py](/home/yagolopez/Escritorio/pso-birds/core/pso.py) y `python3 run_pso.py --mode sequential --seed 7`
+- Benchmarks: [run_benchmarks.py](/home/yagolopez/Escritorio/pso-birds/run_benchmarks.py) y [experiments/benchmarks.py](/home/yagolopez/Escritorio/pso-birds/experiments/benchmarks.py)
+- Visualizacion: [make_viz.py](/home/yagolopez/Escritorio/pso-birds/make_viz.py) y [viz/visualization.py](/home/yagolopez/Escritorio/pso-birds/viz/visualization.py)
+- Grid search: [run_grid_search.py](/home/yagolopez/Escritorio/pso-birds/run_grid_search.py) y [experiments/grid_search.py](/home/yagolopez/Escritorio/pso-birds/experiments/grid_search.py)
+- Persistencia: [core/persistence.py](/home/yagolopez/Escritorio/pso-birds/core/persistence.py) y artefactos en `results/`
+- Logging y observabilidad: [core/logging.py](/home/yagolopez/Escritorio/pso-birds/core/logging.py) y logs por iteracion en [core/pso.py](/home/yagolopez/Escritorio/pso-birds/core/pso.py)
+- Reproducibilidad por seed: `--seed` en runners y configuracion persistida en `result.json`, `summary.json`, `comparison.json` y `grid_search.json`
+- Variantes paralelas/concurrentes: `sequential`, `thread`, `process`, `asyncio`, `numpy` en `parallel/`
+- Scripts principales: [run_pso.py](/home/yagolopez/Escritorio/pso-birds/run_pso.py), [run_benchmarks.py](/home/yagolopez/Escritorio/pso-birds/run_benchmarks.py), [run_grid_search.py](/home/yagolopez/Escritorio/pso-birds/run_grid_search.py), [make_viz.py](/home/yagolopez/Escritorio/pso-birds/make_viz.py)
+- Tests: `python3 -m unittest discover -s tests -v` y carpeta [tests](/home/yagolopez/Escritorio/pso-birds/tests)
+
+## Interpretacion de resultados
+
+1. Lo que se compara realmente son las estrategias de evaluacion del fitness; el PSO base y sus hiperparametros se mantienen fijos.
+2. Una version paralela puede ser mas lenta si el coste de coordinar workers, serializar datos o lanzar tareas supera el trabajo util de evaluar el fitness.
+3. En este proyecto, `overhead` es la parte del tiempo total de iteracion que no cae ni en evaluacion de fitness ni en actualizacion de particulas; captura coordinacion, scheduling y costes de infraestructura.
+4. La comparacion sigue siendo valida cuando el fitness final es comparable porque todas las variantes usan la misma funcion objetivo, dimensiones, semillas, numero de particulas e iteraciones.
+
+## Modos paralelos
+
+- `sequential`: baseline sin paralelismo ni costes de coordinacion.
+- `thread`: comparte memoria, pero puede quedar limitado por el GIL si el fitness no libera CPU.
+- `process`: evita el GIL, pero puede perder frente a `sequential` por IPC, serializacion y granularidad insuficiente.
+- `asyncio`: coordina tareas concurrentes y tiene sentido sobre todo si el fitness es esperable o bloqueante por E/S.
+- `numpy`: vectoriza la evaluacion y evita buena parte del overhead de orquestacion de workers.

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+from dataclasses import asdict
 from pathlib import Path
 from pprint import pformat
 
@@ -35,14 +36,27 @@ def main() -> None:
     artifact_config = ArtifactConfig(output_directory=args.output_dir)
     writer = ArtifactWriter(artifact_config)
     run_directory = writer.prepare_run_directory(objective.name, args.mode, 0)
+    swarm_config = build_swarm_config_from_args(args)
     optimizer = BirdSwarmOptimizer(
-        swarm_config=build_swarm_config_from_args(args),
+        swarm_config=swarm_config,
         search_space=search_space,
         evaluator=build_fitness_evaluator(mode=args.mode, workers=args.workers),
         logger=JsonLinesBirdLogger.for_directory(run_directory, enabled=artifact_config.save_jsonl_log),
     )
     result = optimizer.run(objective, include_history=True)
-    writer.write_run_artifacts(result, objective.name, args.mode, 0)
+    writer.write_run_artifacts(
+        result,
+        objective.name,
+        args.mode,
+        0,
+        metadata={
+            "objective": objective.name,
+            "mode": args.mode,
+            "workers": args.workers,
+            "search_space": asdict(search_space),
+            "swarm": asdict(swarm_config),
+        },
+    )
     if run_directory is not None and result.history is not None and artifact_config.save_svg_plot:
         write_visualization_artifacts(run_directory, result.history, objective, search_space)
 

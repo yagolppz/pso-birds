@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import asdict
 from itertools import product
 
 from .config import BenchmarkConfig, SwarmConfig
@@ -29,7 +30,13 @@ def run_benchmark(config: BenchmarkConfig) -> BenchmarkResult:
         )
         run = optimizer.run(config.objective, include_history=config.include_history)
         runs.append(run)
-        writer.write_run_artifacts(run, config.objective.name, config.evaluator_mode, repetition)
+        writer.write_run_artifacts(
+            run,
+            config.objective.name,
+            config.evaluator_mode,
+            repetition,
+            metadata=_run_metadata(config, repetition),
+        )
         if run.history is not None and run_directory is not None and config.artifacts.save_svg_plot:
             write_visualization_artifacts(run_directory, run.history, config.objective, config.search_space)
 
@@ -47,7 +54,12 @@ def run_benchmark(config: BenchmarkConfig) -> BenchmarkResult:
         ),
         best_run=best_run,
     )
-    writer.write_summary_artifacts(summary, config.objective.name, config.evaluator_mode)
+    writer.write_summary_artifacts(
+        summary,
+        config.objective.name,
+        config.evaluator_mode,
+        metadata=_benchmark_metadata(config, config.evaluator_mode),
+    )
     return summary
 
 
@@ -72,7 +84,15 @@ def compare_benchmark(config: BenchmarkConfig, candidate_mode: str, workers: int
         "candidate": candidate,
         "speedup": baseline.timings.total_seconds_mean / candidate.timings.total_seconds_mean,
     }
-    ArtifactWriter(config.artifacts).write_comparison_artifacts(payload, config.objective.name, candidate_mode)
+    ArtifactWriter(config.artifacts).write_comparison_artifacts(
+        payload,
+        config.objective.name,
+        candidate_mode,
+        metadata={
+            **_benchmark_metadata(config, "sequential"),
+            "candidate_mode": candidate_mode,
+        },
+    )
     return payload
 
 
@@ -111,8 +131,41 @@ def grid_search_benchmark(
         rows.append(_build_grid_row(config, run_mode, varied, seed_summaries))
 
     rows.sort(key=lambda row: (row["best_crumbs_mean"], row["total_seconds_mean"]))
-    ArtifactWriter(config.artifacts).write_grid_search_artifacts(rows, config.objective.name, run_mode)
+    ArtifactWriter(config.artifacts).write_grid_search_artifacts(
+        rows,
+        config.objective.name,
+        run_mode,
+        metadata={
+            **_benchmark_metadata(config, run_mode),
+            "grid": grid,
+            "seeds": selected_seeds,
+        },
+    )
     return rows
+
+
+def _run_metadata(config: BenchmarkConfig, repetition: int) -> dict[str, object]:
+    swarm = _swarm_for_repetition(config.swarm, repetition)
+    return {
+        "objective": config.objective.name,
+        "mode": config.evaluator_mode,
+        "repetition": repetition,
+        "workers": config.workers,
+        "search_space": asdict(config.search_space),
+        "swarm": asdict(swarm),
+    }
+
+
+def _benchmark_metadata(config: BenchmarkConfig, mode: str) -> dict[str, object]:
+    return {
+        "objective": config.objective.name,
+        "mode": mode,
+        "workers": config.workers,
+        "repetitions": config.repetitions,
+        "seeds": [config.swarm.random_seed + repetition for repetition in range(config.repetitions)],
+        "search_space": asdict(config.search_space),
+        "swarm": asdict(config.swarm),
+    }
 
 
 def _build_grid_row(
