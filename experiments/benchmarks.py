@@ -9,6 +9,7 @@ from pprint import pformat
 from core.benchmark import compare_benchmark, run_benchmark
 from core.cli_utils import MODE_CHOICES, NON_SEQUENTIAL_MODE_CHOICES, add_common_pso_arguments
 from core.config import ArtifactConfig, BenchmarkConfig, SearchSpaceConfig, SwarmConfig
+from core.logging import configure_project_logger, get_project_logger
 from core.persistence import ArtifactWriter
 from objectives import OBJECTIVES, get_objective
 
@@ -41,11 +42,14 @@ def build_suite_parser() -> argparse.ArgumentParser:
     parser.add_argument("--workers", type=int, default=None)
     parser.add_argument("--seed", type=int, default=7)
     parser.add_argument("--output-dir", type=Path, default=Path("results"))
+    parser.add_argument("--log-file", type=Path, default=None)
     return parser
 
 
 def main_compare_cli() -> None:
     args = build_compare_parser().parse_args()
+    configure_project_logger(log_file=args.log_file)
+    logger = get_project_logger()
     objective = get_objective(args.objective)
     config = BenchmarkConfig(
         objective=objective,
@@ -63,14 +67,16 @@ def main_compare_cli() -> None:
 
     comparison = compare_benchmark(config, candidate_mode=args.candidate_mode, workers=args.workers)
     print_summary(comparison["baseline"])
-    print()
+    logger.info("")
     print_summary(comparison["candidate"])
-    print()
-    print(f"Aceleracion estimada: x{comparison['speedup']:.3f}")
+    logger.info("")
+    logger.info("Aceleracion estimada: x%.3f", comparison["speedup"])
 
 
 def main_suite_cli() -> None:
     args = build_suite_parser().parse_args()
+    configure_project_logger(log_file=args.log_file)
+    logger = get_project_logger()
     rows = run_benchmark_suite(
         objective_names=_parse_csv(args.objectives),
         dimensions=[int(value) for value in _parse_csv(args.dimensions)],
@@ -83,7 +89,7 @@ def main_suite_cli() -> None:
         output_directory=args.output_dir,
     )
     for row in rows[:12]:
-        print(pformat(row))
+        logger.info("%s", pformat(row))
 
 
 def run_benchmark_suite(
@@ -150,28 +156,43 @@ def run_benchmark_suite(
                 )
 
     rows.sort(key=lambda row: (row["objective"], row["dimensions"], row["mode"]))
-    writer.write_named_rows_artifacts(Path("benchmark_suite"), "summary", rows)
+    _write_named_rows_artifacts(writer, Path("benchmark_suite"), "summary", rows)
     return rows
 
 
+def _write_named_rows_artifacts(writer: ArtifactWriter, directory: Path, stem: str, rows: list[dict[str, object]]) -> None:
+    if writer.config.output_directory is None:
+        return
+    target_directory = writer.config.output_directory / directory
+    target_directory.mkdir(parents=True, exist_ok=True)
+    if writer.config.save_json:
+        writer._write_json(target_directory / f"{stem}.json", {"rows": rows})
+    if writer.config.save_yaml:
+        writer._write_yaml(target_directory / f"{stem}.yaml", {"rows": rows})
+    if writer.config.save_csv:
+        writer._write_csv(target_directory / f"{stem}.csv", rows)
+
+
 def print_summary(summary) -> None:
-    print(f"Modo: {summary.mode}")
-    print(f"Parque: {summary.objective_name}")
-    print(f"Repeticiones: {summary.repetitions}")
-    print(f"Mejor sitio del grupo: {pformat(summary.best_run.best_position)}")
-    print(f"Migas en el tesoro: {summary.best_run.best_crumbs:.10f}")
-    print(f"Vuelos completados: {summary.best_run.flights_completed}")
-    print(f"Tiempo total medio: {summary.timings.total_seconds_mean:.4f} s")
-    print(f"Tiempo fitness medio: {summary.timings.evaluation_seconds_mean:.4f} s")
-    print(f"Tiempo actualizacion medio: {summary.timings.update_seconds_mean:.4f} s")
-    print(f"Overhead medio: {summary.timings.overhead_seconds_mean:.4f} s")
-    print(f"Promedio de migas finales: {summary.best_crumbs_mean:.10f}")
+    logger = get_project_logger()
+    logger.info("Modo: %s", summary.mode)
+    logger.info("Parque: %s", summary.objective_name)
+    logger.info("Repeticiones: %d", summary.repetitions)
+    logger.info("Mejor sitio del grupo: %s", pformat(summary.best_run.best_position))
+    logger.info("Migas en el tesoro: %.10f", summary.best_run.best_crumbs)
+    logger.info("Vuelos completados: %d", summary.best_run.flights_completed)
+    logger.info("Tiempo total medio: %.4f s", summary.timings.total_seconds_mean)
+    logger.info("Tiempo fitness medio: %.4f s", summary.timings.evaluation_seconds_mean)
+    logger.info("Tiempo actualizacion medio: %.4f s", summary.timings.update_seconds_mean)
+    logger.info("Overhead medio: %.4f s", summary.timings.overhead_seconds_mean)
+    logger.info("Promedio de migas finales: %.10f", summary.best_crumbs_mean)
 
 
 def _add_common_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--objective", choices=sorted(OBJECTIVES), default="sphere")
     add_common_pso_arguments(parser)
     parser.add_argument("--output-dir", type=Path, default=None)
+    parser.add_argument("--log-file", type=Path, default=None)
 
 
 def _build_swarm(arguments: argparse.Namespace) -> SwarmConfig:

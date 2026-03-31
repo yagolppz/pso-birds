@@ -8,7 +8,7 @@ from pprint import pformat
 
 from core.cli_utils import MODE_CHOICES, add_common_pso_arguments, build_search_space_from_args, build_swarm_config_from_args
 from core.config import ArtifactConfig
-from core.logging import JsonLinesBirdLogger
+from core.logging import JsonLinesBirdLogger, configure_project_logger, get_project_logger
 from core.persistence import ArtifactWriter
 from core.pso import BirdSwarmOptimizer
 from core.visualization import write_visualization_artifacts
@@ -21,12 +21,15 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--objective", choices=sorted(OBJECTIVES), default="sphere")
     parser.add_argument("--mode", choices=MODE_CHOICES, default="sequential")
     parser.add_argument("--output-dir", type=Path, default=None)
+    parser.add_argument("--log-file", type=Path, default=None)
     add_common_pso_arguments(parser)
     return parser
 
 
 def main() -> None:
     args = build_parser().parse_args()
+    configure_project_logger(log_file=args.log_file)
+    logger = get_project_logger()
     objective = get_objective(args.objective)
     search_space = build_search_space_from_args(args, objective)
     artifact_config = ArtifactConfig(output_directory=args.output_dir)
@@ -43,15 +46,15 @@ def main() -> None:
     if run_directory is not None and result.history is not None and artifact_config.save_svg_plot:
         write_visualization_artifacts(run_directory, result.history, objective, search_space)
 
-    print(f"Modo: {result.evaluator_mode}")
-    print(f"Parque: {objective.name}")
-    print(f"Mejor sitio del grupo: {pformat(result.best_position)}")
-    print(f"Migas en el tesoro: {result.best_crumbs:.10f}")
-    print(f"Vuelos completados: {result.flights_completed}")
-    print(f"Tiempo total: {result.metrics.total_seconds:.4f} s")
-    print(f"Tiempo fitness: {result.metrics.evaluation_seconds:.4f} s")
-    print(f"Tiempo actualizacion: {result.metrics.update_seconds:.4f} s")
-    print(f"Overhead: {result.metrics.overhead_seconds:.4f} s")
+    logger.info("Modo: %s", result.evaluator_mode)
+    logger.info("Parque: %s", objective.name)
+    logger.info("Mejor sitio del grupo: %s", pformat(result.best_position))
+    logger.info("Migas en el tesoro: %.10f", result.best_crumbs)
+    logger.info("Vuelos completados: %d", result.flights_completed)
+    logger.info("Tiempo total: %.4f s", result.metrics.total_seconds)
+    logger.info("Tiempo fitness: %.4f s", result.metrics.evaluation_seconds)
+    logger.info("Tiempo actualizacion: %.4f s", result.metrics.update_seconds)
+    logger.info("Overhead: %.4f s", result.metrics.overhead_seconds)
 
 
 if __name__ == "__main__":

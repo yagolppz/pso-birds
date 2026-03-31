@@ -8,6 +8,7 @@ from pprint import pformat
 
 from core.benchmark import grid_search_benchmark
 from core.config import ArtifactConfig, BenchmarkConfig, SearchSpaceConfig, SwarmConfig
+from core.logging import configure_project_logger, get_project_logger
 from objectives import OBJECTIVES, get_objective
 from parallel import FITNESS_EVALUATOR_REGISTRY
 
@@ -29,11 +30,14 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--grid-c2", default="1.3,1.7,2.1")
     parser.add_argument("--grid-seeds", default="7,8,9")
     parser.add_argument("--output-dir", type=Path, default=Path("results"))
+    parser.add_argument("--log-file", type=Path, default=None)
     return parser
 
 
 def main() -> None:
     args = build_parser().parse_args()
+    configure_project_logger(log_file=args.log_file)
+    logger = get_project_logger()
     objective = get_objective(args.objective)
     config = BenchmarkConfig(
         objective=objective,
@@ -56,7 +60,7 @@ def main() -> None:
     }
     rows = grid_search_benchmark(config, grid, mode=args.mode, seeds=_parse_int_grid(args.grid_seeds))
     for row in rows[:10]:
-        print(pformat(row))
+        logger.info("%s", pformat(row))
 
 
 def _parse_float_grid(raw: str) -> list[float]:

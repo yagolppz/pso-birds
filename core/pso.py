@@ -6,7 +6,7 @@ import random
 import time
 
 from .config import SearchSpaceConfig, SwarmConfig
-from .logging import StructuredLogger
+from .logging import StructuredLogger, get_project_logger
 from .particle import BirdParticle, Vector
 from .results import FlightMetrics, FlightResult
 from .swarm import FlockTreasure, SwarmHistory
@@ -32,6 +32,7 @@ class BirdSwarmOptimizer:
         self.search_space = search_space
         self.evaluator = evaluator
         self.logger = logger
+        self.project_logger = get_project_logger()
         self.random = random.Random(swarm_config.random_seed)
 
     def run(self, objective: ObjectiveDefinition, include_history: bool = True) -> FlightResult:
@@ -41,35 +42,51 @@ class BirdSwarmOptimizer:
         total_evaluation_seconds = 0.0
         total_update_seconds = 0.0
 
+        self.project_logger.info(
+            "Inicio PSO | objective=%s | dimensions=%d | birds=%d | flights=%d | mode=%s | seed=%d | w=%.4f | c1=%.4f | c2=%.4f",
+            objective.name,
+            self.search_space.dimensions,
+            self.swarm_config.birds,
+            self.swarm_config.flights,
+            self.evaluator.mode,
+            self.swarm_config.random_seed,
+            self.swarm_config.inertia,
+            self.swarm_config.cognitive_weight,
+            self.swarm_config.social_weight,
+        )
+
+        first_iteration_start = time.perf_counter()
         treasure, first_evaluation = self._measure_and_update_memories(birds, objective)
+        first_total = time.perf_counter() - first_iteration_start
+        first_overhead = max(0.0, first_total - first_evaluation)
         total_evaluation_seconds += first_evaluation
         if history is not None:
-                history.remember(
-                    0,
-                    treasure.position,
-                    treasure.crumbs,
-                    self._average_remembered_crumbs(birds),
-                    first_evaluation,
-                    0.0,
-                    0.0,
-                    [list(bird.position) for bird in birds],
-                )
-        self._log_flight(0, treasure, first_evaluation, 0.0, 0.0)
+            history.remember(
+                0,
+                treasure.position,
+                treasure.crumbs,
+                self._average_remembered_crumbs(birds),
+                first_evaluation,
+                0.0,
+                first_overhead,
+                [list(bird.position) for bird in birds],
+            )
+        self._log_flight(0, treasure, first_evaluation, 0.0, first_total, first_overhead)
 
         flights_completed = 0
         for flight_number in range(1, self.swarm_config.flights + 1):
             flights_completed = flight_number
+            iteration_start = time.perf_counter()
 
             update_start = time.perf_counter()
             self._move_flock(birds, treasure)
             update_seconds = time.perf_counter() - update_start
             total_update_seconds += update_seconds
 
-            cycle_start = time.perf_counter()
             treasure, evaluation_seconds = self._measure_and_update_memories(birds, objective, treasure)
-            cycle_total = time.perf_counter() - cycle_start
             total_evaluation_seconds += evaluation_seconds
-            overhead_seconds = max(0.0, cycle_total - evaluation_seconds)
+            iteration_total = time.perf_counter() - iteration_start
+            overhead_seconds = max(0.0, iteration_total - evaluation_seconds - update_seconds)
 
             if history is not None:
                 history.remember(
@@ -82,7 +99,7 @@ class BirdSwarmOptimizer:
                     overhead_seconds,
                     [list(bird.position) for bird in birds],
                 )
-            self._log_flight(flight_number, treasure, evaluation_seconds, update_seconds, overhead_seconds)
+            self._log_flight(flight_number, treasure, evaluation_seconds, update_seconds, iteration_total, overhead_seconds)
 
             threshold = self.swarm_config.stop_when_crumbs_below
             if threshold is not None and treasure.crumbs <= threshold:
@@ -101,6 +118,11 @@ class BirdSwarmOptimizer:
                 overhead_seconds=max(0.0, total_seconds - total_evaluation_seconds - total_update_seconds),
             ),
             evaluator_mode=self.evaluator.mode,
+        )
+        self.project_logger.info(
+            "Fin PSO | best_fitness=%.10e | total=%.4fs",
+            result.best_crumbs,
+            total_seconds,
         )
         if self.logger is not None:
             self.logger.log_event("flight_result", result.as_dict())
@@ -183,8 +205,19 @@ class BirdSwarmOptimizer:
         treasure: FlockTreasure,
         evaluation_seconds: float,
         update_seconds: float,
+        iteration_total: float,
         overhead_seconds: float,
     ) -> None:
+        self.project_logger.info(
+            "Iter %d/%d | best=%.6e | eval=%.4fs | update=%.4fs | total=%.4fs | overhead=%.4fs",
+            flight_number,
+            self.swarm_config.flights,
+            treasure.crumbs,
+            evaluation_seconds,
+            update_seconds,
+            iteration_total,
+            overhead_seconds,
+        )
         if self.logger is None:
             return
         self.logger.log_event(
@@ -195,6 +228,7 @@ class BirdSwarmOptimizer:
                 "treasure_crumbs": treasure.crumbs,
                 "evaluation_seconds": evaluation_seconds,
                 "update_seconds": update_seconds,
+                "iteration_total_seconds": iteration_total,
                 "overhead_seconds": overhead_seconds,
                 "mode": self.evaluator.mode,
             },
