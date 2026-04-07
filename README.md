@@ -130,19 +130,14 @@ python3 make_viz.py --help
 
 El proyecto cubre la gran parte de los requisitos del enunciado, sin embargo, por falta de tiempo y organización no se ha podido implementar todo al 100%. Estas son las cosas que faltan o que podrían mejorarse:
 
-### Lo que no dio tiempo a hacer
+### Lo que no dio tiempo a finalizar
 
 - **Criterio de parada por tolerancia o estancamiento**  
   El enunciado pide parada por iteraciones, tolerancia y estancamiento. Solo se implementan iteraciones fijas. El early stopping se queda pendiente.
 
-- **AUC o iteracion de convergencia en grid search**  
-  El grid search guarda mejor fitness final y tiempo, pero no calcula AUC ni la iteracion exacta donde se alcanza el mejor fitness.
-
 - **Informacion de hardware en los resultados**  
   El enunciado dice "info de hardware si se puede". No se ha sabido hacerlo de forma limpia y se han priorizado otras cosas.
 
-- **Boxplots en el informe final**  
-  Los archivos se generan en `results/benchmark_suite/boxplots/`, pero no estan incluidos en el informe escrito.
 
 ### Cosas que el enunciado menciona como opcionales y no se hizo
 
@@ -157,4 +152,4 @@ El PSO base, las 5 estrategias de paralelismo (sequential, thread, process, asyn
 
 ### Conclusion personal
 
-Se priorizo que el codigo funcionara y que las 5 versiones paralelas estuvieran bien implementadas. Los detalles de metricas avanzadas y early stopping no se han llegado a completar.
+Se priorizo que el codigo funcionara y que las 5 versiones paralelas estuvieran bien implementadas. 
