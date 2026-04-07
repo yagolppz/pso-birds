@@ -128,7 +128,7 @@ python3 make_viz.py --help
 
 ## Notas personales y limitaciones
 
-El proyecto cubre la gran parte de los requisitos del enunciado, sin embargo, por falta de tiempo y organización no se ha podido implementar todo al 100%. Estas son las cosas que faltan o que podrían mejorarse:
+El proyecto cubre la gran parte de los requisitos del enunciado. Estas son las cosas que faltan o que podrían mejorarse:
 
 ### Lo que no dio tiempo a finalizar
 
