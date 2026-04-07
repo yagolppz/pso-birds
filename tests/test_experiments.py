@@ -4,7 +4,7 @@ from tempfile import TemporaryDirectory
 
 from core.benchmark import compare_benchmark, grid_search_benchmark, run_benchmark
 from core.config import ArtifactConfig, BenchmarkConfig, SearchSpaceConfig, SwarmConfig
-from experiments.benchmarks import run_benchmark_suite
+from experiments.benchmark_suite import run_benchmark_suite
 from objectives import get_objective
 
 

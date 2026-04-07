@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import sys
 
-from experiments.benchmarks import main_compare_cli, main_suite_cli
+from experiments.benchmark_suite import main_compare_cli, main_suite_cli
 
 
 def main() -> None:

@@ -23,11 +23,20 @@ class ArtifactWriter:
         directory.mkdir(parents=True, exist_ok=True)
         return directory
 
-    def write_run_artifacts(self, run: FlightResult, objective_name: str, mode: str, repetition: int) -> None:
+    def write_run_artifacts(
+        self,
+        run: FlightResult,
+        objective_name: str,
+        mode: str,
+        repetition: int,
+        metadata: dict[str, object] | None = None,
+    ) -> None:
         directory = self.prepare_run_directory(objective_name, mode, repetition)
         if directory is None:
             return
         payload = run.as_dict()
+        if metadata is not None:
+            payload["config"] = metadata
         if self.config.save_json:
             self._write_json(directory / "result.json", payload)
         if self.config.save_yaml:
@@ -35,16 +44,31 @@ class ArtifactWriter:
         if self.config.save_csv and run.history is not None:
             self._write_csv(directory / "history.csv", run.history.as_records())
 
-    def write_summary_artifacts(self, summary: BenchmarkResult, objective_name: str, mode: str) -> None:
+    def write_summary_artifacts(
+        self,
+        summary: BenchmarkResult,
+        objective_name: str,
+        mode: str,
+        metadata: dict[str, object] | None = None,
+    ) -> None:
         directory = self._ensure_directory(Path(objective_name) / mode)
         if directory is None:
             return
+        payload = summary.as_dict()
+        if metadata is not None:
+            payload["config"] = metadata
         if self.config.save_json:
-            self._write_json(directory / "summary.json", summary.as_dict())
+            self._write_json(directory / "summary.json", payload)
         if self.config.save_yaml:
-            self._write_yaml(directory / "summary.yaml", summary.as_dict())
+            self._write_yaml(directory / "summary.yaml", payload)
 
-    def write_comparison_artifacts(self, comparison: dict[str, object], objective_name: str, candidate_mode: str) -> None:
+    def write_comparison_artifacts(
+        self,
+        comparison: dict[str, object],
+        objective_name: str,
+        candidate_mode: str,
+        metadata: dict[str, object] | None = None,
+    ) -> None:
         directory = self._ensure_directory(Path(objective_name) / f"compare_sequential_vs_{candidate_mode}")
         if directory is None:
             return
@@ -53,19 +77,30 @@ class ArtifactWriter:
             "candidate": comparison["candidate"].as_dict(),
             "speedup": comparison["speedup"],
         }
+        if metadata is not None:
+            payload["config"] = metadata
         if self.config.save_json:
             self._write_json(directory / "comparison.json", payload)
         if self.config.save_yaml:
             self._write_yaml(directory / "comparison.yaml", payload)
 
-    def write_grid_search_artifacts(self, rows: list[dict[str, object]], objective_name: str, mode: str) -> None:
+    def write_grid_search_artifacts(
+        self,
+        rows: list[dict[str, object]],
+        objective_name: str,
+        mode: str,
+        metadata: dict[str, object] | None = None,
+    ) -> None:
         directory = self._ensure_directory(Path(objective_name) / f"grid_search_{mode}")
         if directory is None:
             return
+        payload = {"rows": rows}
+        if metadata is not None:
+            payload["config"] = metadata
         if self.config.save_json:
-            self._write_json(directory / "grid_search.json", {"rows": rows})
+            self._write_json(directory / "grid_search.json", payload)
         if self.config.save_yaml:
-            self._write_yaml(directory / "grid_search.yaml", {"rows": rows})
+            self._write_yaml(directory / "grid_search.yaml", payload)
         if self.config.save_csv:
             self._write_csv(directory / "grid_search.csv", rows)
 

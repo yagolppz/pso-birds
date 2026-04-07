@@ -6,24 +6,11 @@ from dataclasses import asdict
 from itertools import product
 
 from .config import BenchmarkConfig, SwarmConfig
+from .persistence_bridge import ArtifactWriter
 from .logging import JsonLinesBirdLogger
-from .persistence import ArtifactWriter
 from .pso import BirdSwarmOptimizer, _swarm_for_repetition, _swarm_with_overrides
 from .results import BenchmarkResult, BenchmarkTimingSummary, FlightResult
 from parallel import build_fitness_evaluator
-
-
-def _cleanup_animation_residues(run_directory):
-    import shutil
-
-    for directory_name in ("swarm_2d_frames", "swarm_3d_frames"):
-        directory_path = run_directory / directory_name
-        if directory_path.exists():
-            shutil.rmtree(directory_path)
-
-    for pattern in ("frame_*.svg", "frame_*.png", "animation.gif", "animation.mp4"):
-        for frame_path in run_directory.glob(pattern):
-            frame_path.unlink()
 
 
 def run_benchmark(config: BenchmarkConfig) -> BenchmarkResult:
@@ -50,7 +37,7 @@ def run_benchmark(config: BenchmarkConfig) -> BenchmarkResult:
             metadata=_run_metadata(config, repetition),
         )
         if run.history is not None and run_directory is not None and config.artifacts.save_svg_plot:
-            from viz.visualization import export_animation, write_visualization_artifacts
+            from viz.visualization import cleanup_animation_residues, export_animation, write_visualization_artifacts
             if config.search_space.dimensions in {2, 3}:
                 write_visualization_artifacts(
                     run_directory,
@@ -67,7 +54,7 @@ def run_benchmark(config: BenchmarkConfig) -> BenchmarkResult:
                     config.search_space,
                 )
                 if animation_path is not None:
-                    _cleanup_animation_residues(run_directory)
+                    cleanup_animation_residues(run_directory)
             else:
                 write_visualization_artifacts(run_directory, run.history, config.objective, config.search_space)
 

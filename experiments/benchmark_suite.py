@@ -9,8 +9,8 @@ from pprint import pformat
 from core.benchmark import compare_benchmark, run_benchmark
 from core.cli_utils import MODE_CHOICES, NON_SEQUENTIAL_MODE_CHOICES, add_common_pso_arguments
 from core.config import ArtifactConfig, BenchmarkConfig, SearchSpaceConfig, SwarmConfig
+from core.persistence_bridge import ArtifactWriter
 from core.logging import configure_project_logger, get_project_logger
-from core.persistence import ArtifactWriter
 from objectives import OBJECTIVES, get_objective
 
 
@@ -156,21 +156,8 @@ def run_benchmark_suite(
                 )
 
     rows.sort(key=lambda row: (row["objective"], row["dimensions"], row["mode"]))
-    _write_named_rows_artifacts(writer, Path("benchmark_suite"), "summary", rows)
+    writer.write_named_rows_artifacts(Path("benchmark_suite"), "summary", rows)
     return rows
-
-
-def _write_named_rows_artifacts(writer: ArtifactWriter, directory: Path, stem: str, rows: list[dict[str, object]]) -> None:
-    if writer.config.output_directory is None:
-        return
-    target_directory = writer.config.output_directory / directory
-    target_directory.mkdir(parents=True, exist_ok=True)
-    if writer.config.save_json:
-        writer._write_json(target_directory / f"{stem}.json", {"rows": rows})
-    if writer.config.save_yaml:
-        writer._write_yaml(target_directory / f"{stem}.yaml", {"rows": rows})
-    if writer.config.save_csv:
-        writer._write_csv(target_directory / f"{stem}.csv", rows)
 
 
 def print_summary(summary) -> None:

@@ -9,12 +9,12 @@ from pprint import pformat
 
 from core.cli_utils import MODE_CHOICES, add_common_pso_arguments, build_search_space_from_args, build_swarm_config_from_args
 from core.config import ArtifactConfig
+from core.persistence_bridge import ArtifactWriter
 from core.logging import JsonLinesBirdLogger, configure_project_logger, get_project_logger
-from core.persistence import ArtifactWriter
 from core.pso import BirdSwarmOptimizer
-from core.visualization import write_visualization_artifacts
 from objectives import OBJECTIVES, get_objective
 from parallel import build_fitness_evaluator
+from viz.visualization import write_visualization_artifacts
 
 
 def build_parser() -> argparse.ArgumentParser:

@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import math
 from pathlib import Path
+import shutil
 from xml.etree import ElementTree as ET
 
 from PIL import Image, ImageDraw, ImageFont
@@ -880,6 +881,19 @@ def export_animation(
             primary_path = output_path
 
     return primary_path
+
+
+def cleanup_animation_residues(run_directory: Path) -> None:
+    """Elimina directorios y archivos temporales usados para animacion."""
+
+    for directory_name in ("swarm_2d_frames", "swarm_3d_frames"):
+        directory_path = run_directory / directory_name
+        if directory_path.exists():
+            shutil.rmtree(directory_path)
+
+    for pattern in ("frame_*.svg", "frame_*.png", "animation.gif", "animation.mp4"):
+        for frame_path in run_directory.glob(pattern):
+            frame_path.unlink()
 
 
 def _save_animation(images: list[Image.Image], output_path: Path, export_format: str) -> None:

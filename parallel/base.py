@@ -27,4 +27,3 @@ class BaseFitnessEvaluator(ABC):
         objective: ObjectiveDefinition,
     ) -> list[float]:
         """Cuenta las migas sin preocuparse del cronometro."""
-
