@@ -1,152 +1,132 @@
 # pso-birds
 
-Proyecto de `Particle Swarm Optimization (PSO)` con arquitectura modular, ejecucion reproducible, comparacion de estrategias de evaluacion paralela, persistencia de resultados y generacion de visualizaciones.
+## 1. Descripcion
 
-## Descripcion general
+Este proyecto implementa `Particle Swarm Optimization (PSO)` en Python con una arquitectura modular y varias estrategias de ejecucion para estudiar el impacto del paralelismo y la concurrencia sobre el tiempo de evaluacion.
 
-El repositorio esta organizado para separar responsabilidades:
+El objetivo del trabajo no es modificar el comportamiento matematico del algoritmo, sino comparar distintas formas de ejecutar la evaluacion del fitness manteniendo fijo el mismo PSO base. Para ello, el repositorio incluye una suite experimental reproducible con metricas agregadas, curvas promedio de convergencia, boxplots de fitness final, speedup y overhead.
 
-- `core/`: logica principal del PSO, configuracion, tipos, resultados y benchmarking base.
-- `objectives/`: funciones objetivo disponibles (`sphere`, `sleepy_sphere`, `ackley`, `rastrigin`, `rosenbrock`).
-- `parallel/`: estrategias de evaluacion de fitness (`sequential`, `thread`, `process`, `asyncio`, `numpy`).
-- `experiments/`: orquestacion de benchmarks y grid search.
+## 2. Estructura del proyecto
+
+- `core/`: implementacion principal del algoritmo PSO, configuracion, tipos, resultados y utilidades base de benchmark.
+- `objectives/`: funciones objetivo disponibles para los experimentos (`sphere`, `sleepy_sphere`, `ackley`, `rastrigin`, `rosenbrock`).
+- `parallel/`: estrategias de evaluacion del fitness.
+- `experiments/`: ejecucion de benchmarks y grid search.
 - `io/`: persistencia de resultados y tablas agregadas.
-- `viz/`: renderizado SVG y exportacion de animaciones.
-- `tests/`: pruebas automáticas del motor, runners y experimentos.
+- `viz/`: generacion de visualizaciones y exportacion de animaciones.
 - `results/`: artefactos generados por las ejecuciones.
+- `tests/`: pruebas automatizadas del proyecto.
 
-## Estructura actual
+Dentro de `results/benchmark_suite/` la organizacion actual es:
 
-Modulos principales del estado actual del repositorio:
+- `boxplots/`: comparacion del fitness final entre estrategias.
+- `curves/`: curvas promedio de convergencia por objetivo y dimension.
+- `tables/`: metricas agregadas en `csv`, `json` y `yaml`.
+- `campaign_runs/`: ejecuciones crudas de cada campaña experimental.
 
-- `core/pso.py`: implementa `BirdSwarmOptimizer`.
-- `core/benchmark.py`: benchmark base, comparacion entre modos y grid search base.
-- `core/persistence_bridge.py`: puente de compatibilidad hacia la persistencia real ubicada en `io/persistence.py`.
-- `io/persistence.py`: escritura de `json`, `yaml`, `csv` y tablas agregadas.
-- `experiments/benchmark_suite.py`: CLI y suite reproducible de benchmarks.
-- `experiments/grid_search.py`: CLI de grid search reproducible.
-- `viz/visualization.py`: visualizacion 2D/3D, SVG y exportacion de animaciones.
+Y dentro de `results/benchmark_suite/tables/`:
 
-## Instalacion
+- `summary/`: resumen agregado por objetivo, dimension y estrategia.
+- `speedup/`: tablas de speedup respecto a `sequential`.
+- `overhead/`: tablas de overhead medio y su proporcion sobre el tiempo total.
+- `per_seed_metrics/`: metricas por seed.
+- `average_curves/`: datos agregados por iteracion para construir curvas promedio.
+- `protocol/`: configuracion general del protocolo experimental.
 
-El proyecto incluye `pyproject.toml` y puede instalarse en modo editable:
+## 3. Instalacion
+
+El proyecto puede instalarse en modo editable con:
 
 ```bash
 python3 -m pip install -e .
 ```
 
-Si el entorno usa una version antigua de `setuptools` o no tiene acceso a red, puede ser util:
-
-```bash
-python3 -m pip install -e . --no-build-isolation
-```
-
-Requisitos actuales:
-
-- Python 3.10 o superior
-
-## Uso basico
+## 4. Uso basico
 
 Ejecucion simple del optimizador:
 
 ```bash
-python3 run_pso.py --objective sphere --mode sequential --birds 30 --dimensions 2 --flights 80
+python3 run_pso.py
 ```
 
-Benchmark puntual:
-
-```bash
-python3 run_benchmarks.py run --objective sphere --mode numpy --birds 20 --dimensions 10 --flights 40 --repetitions 2 --output-dir results
-```
-
-Comparacion entre baseline secuencial y un modo candidato:
-
-```bash
-python3 run_benchmarks.py compare --objective ackley --candidate-mode process --birds 20 --dimensions 10 --flights 40 --workers 4 --repetitions 2 --output-dir results
-```
-
-Suite completa de benchmarks:
+Suite de benchmarks:
 
 ```bash
 python3 run_benchmarks.py
-python3 run_benchmarks.py --objectives sphere,ackley --dimensions 2,10 --modes sequential,numpy,process --birds 16 --flights 25 --repetitions 1 --output-dir results
 ```
 
 Grid search:
 
 ```bash
 python3 run_grid_search.py
-python3 run_grid_search.py --objective sphere --mode sequential --dimensions 2 --grid-w 0.4,0.7,0.9 --grid-c1 1.3,1.7 --grid-c2 1.3,1.7 --grid-seeds 7,8,9 --output-dir results
 ```
 
-Visualizacion y animaciones:
+Generacion de visualizaciones:
 
 ```bash
-python3 make_viz.py --objective sphere --dimensions 2 --birds 20 --flights 40 --output-dir results --export gif
-python3 make_viz.py --objective ackley --dimensions 3 --birds 20 --flights 40 --output-dir results --export mp4
+python3 make_viz.py
 ```
 
-## Scripts principales
+Los scripts aceptan argumentos adicionales para fijar objetivo, dimension, numero de particulas, numero de iteraciones, modo de ejecucion, directorio de salida y otras opciones del experimento.
 
-- `run_pso.py`: ejecuta una sola corrida PSO y, si corresponde, genera artefactos de visualizacion.
-- `run_benchmarks.py`: sirve tanto para una suite completa como para los subcomandos `run` y `compare`.
-- `run_grid_search.py`: ejecuta una busqueda en rejilla sobre `w`, `c1`, `c2` y semillas.
-- `make_viz.py`: ejecuta una corrida PSO y genera artefactos visuales adicionales.
+## 5. Estrategias implementadas
 
-## Estrategias paralelas
+- `sequential`: version base sin paralelismo. Se usa como referencia para comparar tiempos.
+- `thread`: paralelismo con hilos. Reutiliza memoria compartida, pero puede verse limitado por el GIL.
+- `process`: paralelismo con procesos. Evita el GIL, pero introduce coste de serializacion y comunicacion.
+- `asyncio`: coordinacion asincrona de tareas concurrentes.
+- `numpy`: evaluacion vectorizada mediante operaciones sobre arrays.
 
-Las estrategias disponibles se implementan en `parallel/`:
+## 6. Protocolo experimental
 
-- `sequential`: baseline sin paralelismo.
-- `thread`: evaluacion con `ThreadPoolExecutor`.
-- `process`: evaluacion con `ProcessPoolExecutor`.
-- `asyncio`: coordinacion asincrona de evaluaciones.
-- `numpy`: evaluacion vectorizada con NumPy.
+La suite experimental se ha preparado para un protocolo reproducible centrado en comparar estrategias de ejecucion:
 
-La comparacion experimental se centra en la evaluacion del fitness, manteniendo fija la logica del PSO.
+- dimensiones analizadas: `2`, `10` y `30`
+- `5` seeds por configuracion
+- grid search reducido sobre `w`, `c1` y `c2`
+- comparacion entre todas las estrategias implementadas
 
-## Persistencia
+Las metricas principales analizadas son:
 
-La persistencia real se centraliza en `io/persistence.py` mediante `ArtifactWriter`.
+- curvas promedio de convergencia por iteracion
+- boxplots del fitness final por estrategia
+- speedup respecto a la version secuencial
+- overhead medio de cada estrategia
 
-Por compatibilidad con el nombre reservado `io` de la biblioteca estandar de Python, el resto del proyecto usa `core/persistence_bridge.py` como punto de acceso estable. No es una segunda implementacion: solo redirige a la persistencia canonica.
+La salida agregada se guarda en `results/benchmark_suite/`, mientras que las ejecuciones crudas de cada campaña se guardan en `results/benchmark_suite/campaign_runs/`.
 
-Segun el script ejecutado y la configuracion usada, pueden generarse artefactos como:
+## 7. Resultados y analisis
 
-- `result.json`, `result.yaml`
-- `summary.json`, `summary.yaml`
-- `comparison.json`, `comparison.yaml`
-- `grid_search.json`, `grid_search.yaml`, `grid_search.csv`
-- `history.csv`
-- `benchmark_suite/summary.json`, `benchmark_suite/summary.yaml`, `benchmark_suite/summary.csv`
+La interpretacion del experimento se apoya en una idea central: el algoritmo base no cambia entre estrategias. Por eso, el fitness final esperado debe ser comparable entre `sequential`, `thread`, `process`, `asyncio` y `numpy` cuando se usan la misma funcion objetivo, la misma dimension, las mismas seeds y los mismos hiperparametros.
 
-Los artefactos se escriben bajo `results/` cuando se proporciona o se usa un directorio de salida.
+En las curvas promedio de convergencia es normal que varias lineas aparezcan muy solapadas. Eso no indica un error: refleja que todas las estrategias siguen la misma trayectoria de optimizacion, ya que la paralelizacion afecta al tiempo de ejecucion, no a la logica del PSO.
 
-## Visualizacion
+Por tanto, el analisis principal del trabajo se centra en los tiempos:
 
-El paquete `viz/` concentra el renderizado de artefactos visuales:
+- `speedup`: relacion entre el tiempo secuencial y el tiempo de una estrategia concreta.
+- `overhead`: parte del tiempo total que no corresponde directamente ni a la evaluacion del fitness ni a la actualizacion de particulas.
 
-- `convergence.svg`: evolucion del mejor fitness por iteracion.
-- `swarm_2d.svg`: vista estatica del enjambre en problemas bidimensionales.
-- animaciones `gif` o `mp4` generadas desde `make_viz.py` segun el valor de `--export`.
+Una estrategia puede no mejorar a `sequential` si el coste de coordinacion, serializacion o gestion de tareas supera el trabajo util que se paraleliza.
 
-En ejecuciones 2D y 3D se pueden generar vistas adaptadas a la dimensionalidad del problema. La limpieza de residuos temporales de animacion tambien se gestiona desde `viz/visualization.py`.
+## 8. Validacion
 
-## Validacion rapida
+Para ejecutar la bateria de tests:
 
-Comandos utiles para comprobar que el proyecto sigue operativo:
+```bash
+python3 -m unittest discover -s tests
+```
+
+Tambien es posible comprobar los scripts principales con:
 
 ```bash
 python3 run_pso.py --help
 python3 run_benchmarks.py --help
-python3 run_benchmarks.py run --help
-python3 run_benchmarks.py compare --help
 python3 run_grid_search.py --help
 python3 make_viz.py --help
-python3 -m unittest discover -s tests
 ```
 
-## Notas
+## 9. Notas finales
 
-- Este README describe el estado actual del repositorio, sin adelantar cambios experimentales que todavia no formen parte del codigo.
-- `results/` contiene salidas generadas y no forma parte de la logica del paquete.
+Este proyecto esta orientado al estudio del rendimiento de distintas estrategias de ejecucion sobre una implementacion comun de PSO.
+
+La paralelizacion no busca mejorar la calidad de la solucion encontrada por el algoritmo, sino comparar su efecto sobre el tiempo total, el speedup y el overhead manteniendo constante el resultado computacional esperado.
