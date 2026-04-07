@@ -128,21 +128,21 @@ python3 make_viz.py --help
 
 ## Notas personales y limitaciones
 
-El proyecto cubre la gran parte de los requisitos del enunciado, ain embargo, por falta de tiempo y organización no se ha podido implementar todo al 100%. Estas son las cosas que faltan o que podrían mejorarse:
+El proyecto cubre la gran parte de los requisitos del enunciado, sin embargo, por falta de tiempo y organización no se ha podido implementar todo al 100%. Estas son las cosas que faltan o que podrían mejorarse:
 
 ### Lo que no dio tiempo a hacer
 
 - **Criterio de parada por tolerancia o estancamiento**  
-  El enunciado pedía parada por iteraciones, tolerancia y estancamiento. Solo se implementan iteraciones fijas. El early stopping se queda pendiente.
+  El enunciado pide parada por iteraciones, tolerancia y estancamiento. Solo se implementan iteraciones fijas. El early stopping se queda pendiente.
 
 - **AUC o iteracion de convergencia en grid search**  
-  El grid search guarda mejor fitness final y tiempo, pero no calcula AUC ni la iteración exacta donde se alcanza el mejor fitness.
+  El grid search guarda mejor fitness final y tiempo, pero no calcula AUC ni la iteracion exacta donde se alcanza el mejor fitness.
 
 - **Informacion de hardware en los resultados**  
   El enunciado dice "info de hardware si se puede". No se ha sabido hacerlo de forma limpia y se han priorizado otras cosas.
 
 - **Boxplots en el informe final**  
-  Los archivos se generan en `results/benchmark_suite/boxplots/`, pero no están incluidos en el informe escrito.
+  Los archivos se generan en `results/benchmark_suite/boxplots/`, pero no estan incluidos en el informe escrito.
 
 ### Cosas que el enunciado menciona como opcionales y no se hizo
 
@@ -153,8 +153,8 @@ El proyecto cubre la gran parte de los requisitos del enunciado, ain embargo, po
 
 ### Lo que funciona correctamente
 
-El PSO base, las 5 estrategias de paralelismo (sequential, thread, process, asyncio, numpy), la persistencia en múltiples formatos, el grid search básico, las visualizaciones y los tests. El profesor puede ejecutar los scripts y verificar los resultados en la carpeta `results/`.
+El PSO base, las 5 estrategias de paralelismo (sequential, thread, process, asyncio, numpy), la persistencia en multiples formatos, el grid search basico, las visualizaciones y los tests. El docente puede ejecutar los scripts y verificar los resultados en la carpeta `results/`.
 
-### Conclusión personal
+### Conclusion personal
 
-Con la organización y tiempo que se dispuso, se priorizO que el código funcionara y que las 5 versiones paralelas estuvieran bien implementadas. Los detalles de métricas avanzadas y early stopping no se han llegado a completar.
+Se priorizo que el codigo funcionara y que las 5 versiones paralelas estuvieran bien implementadas. Los detalles de metricas avanzadas y early stopping no se han llegado a completar.
