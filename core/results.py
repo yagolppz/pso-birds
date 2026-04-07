@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 
 from .particle import Vector
 from .swarm import SwarmHistory
@@ -59,6 +59,8 @@ class BenchmarkResult:
     best_crumbs_mean: float
     timings: BenchmarkTimingSummary
     best_run: FlightResult
+    seed_rows: list[dict[str, object]] = field(default_factory=list)
+    average_history: list[dict[str, object]] = field(default_factory=list)
 
     def as_dict(self) -> dict[str, object]:
         return asdict(self)

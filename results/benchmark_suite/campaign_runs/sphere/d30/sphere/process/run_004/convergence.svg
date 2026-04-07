@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="360" viewBox="0 0 900 360">
+  <rect width="900" height="360" fill="#f5efe2" />
+  <rect x="40" y="40" width="820" height="280" fill="#fffaf0" stroke="#66513a" />
+  <polyline fill="none" stroke="#bf5b04" stroke-width="3" points="40.00,40.00 81.00,183.51 122.00,260.81 163.00,264.29 204.00,264.29 245.00,267.45 286.00,281.51 327.00,292.79 368.00,297.79 409.00,304.09 450.00,307.07 491.00,310.85 532.00,310.85 573.00,310.85 614.00,310.85 655.00,315.12 696.00,315.12 737.00,315.12 778.00,316.24 819.00,316.24 860.00,320.00" />
+  <text x="40" y="24" font-size="18" fill="#3f2d1b">Best fitness por iteracion</text>
+  <text x="40" y="350" font-size="12" fill="#3f2d1b">Vuelos</text>
+  <text x="860" y="24" text-anchor="end" font-size="12" fill="#3f2d1b">Min: 21.7649 | Max: 216.202</text>
+</svg>

@@ -71,6 +71,8 @@ def run_benchmark(config: BenchmarkConfig) -> BenchmarkResult:
             overhead_seconds_mean=sum(run.metrics.overhead_seconds for run in runs) / len(runs),
         ),
         best_run=best_run,
+        seed_rows=_build_seed_rows(config, runs),
+        average_history=_build_average_history(runs),
     )
     writer.write_summary_artifacts(
         summary,
@@ -216,3 +218,61 @@ def _build_grid_row(
         "overhead_seconds_mean": sum(summary.timings.overhead_seconds_mean for summary in summaries) / len(summaries),
         "best_position": best_summary.best_run.best_position,
     }
+
+
+def _build_seed_rows(config: BenchmarkConfig, runs: list[FlightResult]) -> list[dict[str, object]]:
+    rows: list[dict[str, object]] = []
+    for repetition, run in enumerate(runs):
+        rows.append(
+            {
+                "objective": config.objective.name,
+                "dimensions": config.search_space.dimensions,
+                "mode": config.evaluator_mode,
+                "repetition": repetition,
+                "seed": config.swarm.random_seed + repetition,
+                "birds": config.swarm.birds,
+                "flights": config.swarm.flights,
+                "best_crumbs": run.best_crumbs,
+                "best_position": run.best_position,
+                "flights_completed": run.flights_completed,
+                "total_seconds": run.metrics.total_seconds,
+                "evaluation_seconds": run.metrics.evaluation_seconds,
+                "update_seconds": run.metrics.update_seconds,
+                "overhead_seconds": run.metrics.overhead_seconds,
+            }
+        )
+    return rows
+
+
+def _build_average_history(runs: list[FlightResult]) -> list[dict[str, object]]:
+    buckets: dict[int, list[dict[str, float]]] = {}
+
+    for run in runs:
+        if run.history is None:
+            continue
+        for snapshot in run.history.snapshots:
+            buckets.setdefault(snapshot.flight_number, []).append(
+                {
+                    "treasure_crumbs": snapshot.treasure_crumbs,
+                    "average_crumbs": snapshot.average_crumbs,
+                    "evaluation_seconds": snapshot.evaluation_seconds,
+                    "update_seconds": snapshot.update_seconds,
+                    "overhead_seconds": snapshot.overhead_seconds,
+                }
+            )
+
+    rows: list[dict[str, object]] = []
+    for flight_number in sorted(buckets):
+        samples = buckets[flight_number]
+        rows.append(
+            {
+                "flight_number": flight_number,
+                "sample_count": len(samples),
+                "treasure_crumbs_mean": sum(sample["treasure_crumbs"] for sample in samples) / len(samples),
+                "average_crumbs_mean": sum(sample["average_crumbs"] for sample in samples) / len(samples),
+                "evaluation_seconds_mean": sum(sample["evaluation_seconds"] for sample in samples) / len(samples),
+                "update_seconds_mean": sum(sample["update_seconds"] for sample in samples) / len(samples),
+                "overhead_seconds_mean": sum(sample["overhead_seconds"] for sample in samples) / len(samples),
+            }
+        )
+    return rows

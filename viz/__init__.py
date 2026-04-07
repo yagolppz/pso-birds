@@ -3,7 +3,9 @@
 from .visualization import (
     cleanup_animation_residues,
     export_animation,
+    render_average_convergence_svg,
     render_animation_html,
+    render_boxplot_svg,
     render_convergence_svg,
     render_swarm_2d_frame_svg,
     render_swarm_2d_svg,
@@ -16,7 +18,9 @@ from .visualization import (
 __all__ = [
     "cleanup_animation_residues",
     "export_animation",
+    "render_average_convergence_svg",
     "render_animation_html",
+    "render_boxplot_svg",
     "render_convergence_svg",
     "render_swarm_2d_frame_svg",
     "render_swarm_2d_svg",

@@ -1,0 +1,361 @@
+rows:
+  -
+    objective: "ackley"
+    dimensions: 2
+    mode: "asyncio"
+    speedup_vs_sequential: 0.26122732270746635
+    total_seconds_mean: 0.04948107520031044
+  -
+    objective: "ackley"
+    dimensions: 2
+    mode: "numpy"
+    speedup_vs_sequential: 0.42789930145986954
+    total_seconds_mean: 0.0302075949999562
+  -
+    objective: "ackley"
+    dimensions: 2
+    mode: "process"
+    speedup_vs_sequential: 0.006244843613105649
+    total_seconds_mean: 2.069837068799825
+  -
+    objective: "ackley"
+    dimensions: 2
+    mode: "sequential"
+    speedup_vs_sequential: 1.0
+    total_seconds_mean: 0.012925808799263905
+  -
+    objective: "ackley"
+    dimensions: 2
+    mode: "thread"
+    speedup_vs_sequential: 0.044380731608564115
+    total_seconds_mean: 0.2912482136001927
+  -
+    objective: "ackley"
+    dimensions: 10
+    mode: "asyncio"
+    speedup_vs_sequential: 0.9628727529915739
+    total_seconds_mean: 0.040397199400104
+  -
+    objective: "ackley"
+    dimensions: 10
+    mode: "numpy"
+    speedup_vs_sequential: 1.8973510968252199
+    total_seconds_mean: 0.020500877599624802
+  -
+    objective: "ackley"
+    dimensions: 10
+    mode: "process"
+    speedup_vs_sequential: 0.01564754617179674
+    total_seconds_mean: 2.4858442449996803
+  -
+    objective: "ackley"
+    dimensions: 10
+    mode: "sequential"
+    speedup_vs_sequential: 1.0
+    total_seconds_mean: 0.038897362599527696
+  -
+    objective: "ackley"
+    dimensions: 10
+    mode: "thread"
+    speedup_vs_sequential: 0.1576825934785809
+    total_seconds_mean: 0.24668139799978234
+  -
+    objective: "ackley"
+    dimensions: 30
+    mode: "asyncio"
+    speedup_vs_sequential: 0.5774506304470617
+    total_seconds_mean: 0.0782206738000241
+  -
+    objective: "ackley"
+    dimensions: 30
+    mode: "numpy"
+    speedup_vs_sequential: 0.3553267165436379
+    total_seconds_mean: 0.12711843859979127
+  -
+    objective: "ackley"
+    dimensions: 30
+    mode: "process"
+    speedup_vs_sequential: 0.017537157803733976
+    total_seconds_mean: 2.575592801599851
+  -
+    objective: "ackley"
+    dimensions: 30
+    mode: "sequential"
+    speedup_vs_sequential: 1.0
+    total_seconds_mean: 0.045168577399817875
+  -
+    objective: "ackley"
+    dimensions: 30
+    mode: "thread"
+    speedup_vs_sequential: 0.14695533698852925
+    total_seconds_mean: 0.30736262000027637
+  -
+    objective: "rastrigin"
+    dimensions: 2
+    mode: "asyncio"
+    speedup_vs_sequential: 1.509996627015609
+    total_seconds_mean: 0.05165113180046319
+  -
+    objective: "rastrigin"
+    dimensions: 2
+    mode: "numpy"
+    speedup_vs_sequential: 0.9696453198388735
+    total_seconds_mean: 0.08043460139961098
+  -
+    objective: "rastrigin"
+    dimensions: 2
+    mode: "process"
+    speedup_vs_sequential: 0.02852242717101851
+    total_seconds_mean: 2.73444592679989
+  -
+    objective: "rastrigin"
+    dimensions: 2
+    mode: "sequential"
+    speedup_vs_sequential: 1.0
+    total_seconds_mean: 0.07799303480023809
+  -
+    objective: "rastrigin"
+    dimensions: 2
+    mode: "thread"
+    speedup_vs_sequential: 0.05956711448481212
+    total_seconds_mean: 1.3093304162001005
+  -
+    objective: "rastrigin"
+    dimensions: 10
+    mode: "asyncio"
+    speedup_vs_sequential: 0.3158537213619966
+    total_seconds_mean: 0.11649980199981655
+  -
+    objective: "rastrigin"
+    dimensions: 10
+    mode: "numpy"
+    speedup_vs_sequential: 0.42956359905477276
+    total_seconds_mean: 0.08566111300060583
+  -
+    objective: "rastrigin"
+    dimensions: 10
+    mode: "process"
+    speedup_vs_sequential: 0.008694024384079733
+    total_seconds_mean: 4.2324353342002725
+  -
+    objective: "rastrigin"
+    dimensions: 10
+    mode: "sequential"
+    speedup_vs_sequential: 1.0
+    total_seconds_mean: 0.036796895999577826
+  -
+    objective: "rastrigin"
+    dimensions: 10
+    mode: "thread"
+    speedup_vs_sequential: 0.06654605072046034
+    total_seconds_mean: 0.5529538657996454
+  -
+    objective: "rastrigin"
+    dimensions: 30
+    mode: "asyncio"
+    speedup_vs_sequential: 0.6584139430932814
+    total_seconds_mean: 0.11430272580000747
+  -
+    objective: "rastrigin"
+    dimensions: 30
+    mode: "numpy"
+    speedup_vs_sequential: 1.603890541861087
+    total_seconds_mean: 0.046922471600191785
+  -
+    objective: "rastrigin"
+    dimensions: 30
+    mode: "process"
+    speedup_vs_sequential: 0.019171197357740366
+    total_seconds_mean: 3.925602923800034
+  -
+    objective: "rastrigin"
+    dimensions: 30
+    mode: "sequential"
+    speedup_vs_sequential: 1.0
+    total_seconds_mean: 0.07525850840029306
+  -
+    objective: "rastrigin"
+    dimensions: 30
+    mode: "thread"
+    speedup_vs_sequential: 0.12197807669495697
+    total_seconds_mean: 0.6169838911995612
+  -
+    objective: "rosenbrock"
+    dimensions: 2
+    mode: "asyncio"
+    speedup_vs_sequential: 0.3580041766823165
+    total_seconds_mean: 0.11238195200021436
+  -
+    objective: "rosenbrock"
+    dimensions: 2
+    mode: "numpy"
+    speedup_vs_sequential: 1.8588698069459682
+    total_seconds_mean: 0.021643908599435234
+  -
+    objective: "rosenbrock"
+    dimensions: 2
+    mode: "process"
+    speedup_vs_sequential: 0.010636355644152835
+    total_seconds_mean: 3.7826121602003697
+  -
+    objective: "rosenbrock"
+    dimensions: 2
+    mode: "sequential"
+    speedup_vs_sequential: 1.0
+    total_seconds_mean: 0.04023320819978835
+  -
+    objective: "rosenbrock"
+    dimensions: 2
+    mode: "thread"
+    speedup_vs_sequential: 0.03917654942695545
+    total_seconds_mean: 1.0269717161998415
+  -
+    objective: "rosenbrock"
+    dimensions: 10
+    mode: "asyncio"
+    speedup_vs_sequential: 0.9674080545362633
+    total_seconds_mean: 0.07254776500012668
+  -
+    objective: "rosenbrock"
+    dimensions: 10
+    mode: "numpy"
+    speedup_vs_sequential: 1.411616610791755
+    total_seconds_mean: 0.04971838080055022
+  -
+    objective: "rosenbrock"
+    dimensions: 10
+    mode: "process"
+    speedup_vs_sequential: 0.012342222697254197
+    total_seconds_mean: 5.686438652200013
+  -
+    objective: "rosenbrock"
+    dimensions: 10
+    mode: "sequential"
+    speedup_vs_sequential: 1.0
+    total_seconds_mean: 0.07018329219972656
+  -
+    objective: "rosenbrock"
+    dimensions: 10
+    mode: "thread"
+    speedup_vs_sequential: 0.0705085535865462
+    total_seconds_mean: 0.9953869230004784
+  -
+    objective: "rosenbrock"
+    dimensions: 30
+    mode: "asyncio"
+    speedup_vs_sequential: 1.7564008729439102
+    total_seconds_mean: 0.11309441020021041
+  -
+    objective: "rosenbrock"
+    dimensions: 30
+    mode: "numpy"
+    speedup_vs_sequential: 1.7835222925128715
+    total_seconds_mean: 0.11137462180013244
+  -
+    objective: "rosenbrock"
+    dimensions: 30
+    mode: "process"
+    speedup_vs_sequential: 0.0353631967999093
+    total_seconds_mean: 5.6171143667994325
+  -
+    objective: "rosenbrock"
+    dimensions: 30
+    mode: "sequential"
+    speedup_vs_sequential: 1.0
+    total_seconds_mean: 0.19863912080072624
+  -
+    objective: "rosenbrock"
+    dimensions: 30
+    mode: "thread"
+    speedup_vs_sequential: 0.13757625995009284
+    total_seconds_mean: 1.4438473678001174
+  -
+    objective: "sphere"
+    dimensions: 2
+    mode: "asyncio"
+    speedup_vs_sequential: 0.1658683691646024
+    total_seconds_mean: 0.10999792239999806
+  -
+    objective: "sphere"
+    dimensions: 2
+    mode: "numpy"
+    speedup_vs_sequential: 0.3599661508399734
+    total_seconds_mean: 0.050685810200229754
+  -
+    objective: "sphere"
+    dimensions: 2
+    mode: "process"
+    speedup_vs_sequential: 0.006353612347305688
+    total_seconds_mean: 2.871622472799936
+  -
+    objective: "sphere"
+    dimensions: 2
+    mode: "sequential"
+    speedup_vs_sequential: 1.0
+    total_seconds_mean: 0.018245175999982165
+  -
+    objective: "sphere"
+    dimensions: 2
+    mode: "thread"
+    speedup_vs_sequential: 0.07827713711489054
+    total_seconds_mean: 0.2330843547995755
+  -
+    objective: "sphere"
+    dimensions: 10
+    mode: "asyncio"
+    speedup_vs_sequential: 0.44058290506490594
+    total_seconds_mean: 0.04336168240042752
+  -
+    objective: "sphere"
+    dimensions: 10
+    mode: "numpy"
+    speedup_vs_sequential: 0.7350013551062136
+    total_seconds_mean: 0.02599235480010975
+  -
+    objective: "sphere"
+    dimensions: 10
+    mode: "process"
+    speedup_vs_sequential: 0.014475928387362795
+    total_seconds_mean: 1.3197368410001218
+  -
+    objective: "sphere"
+    dimensions: 10
+    mode: "sequential"
+    speedup_vs_sequential: 1.0
+    total_seconds_mean: 0.019104416000482162
+  -
+    objective: "sphere"
+    dimensions: 10
+    mode: "thread"
+    speedup_vs_sequential: 0.07066170038549988
+    total_seconds_mean: 0.2703645099998539
+  -
+    objective: "sphere"
+    dimensions: 30
+    mode: "asyncio"
+    speedup_vs_sequential: 0.6818878236704059
+    total_seconds_mean: 0.04882030540029518
+  -
+    objective: "sphere"
+    dimensions: 30
+    mode: "numpy"
+    speedup_vs_sequential: 1.6867437545430715
+    total_seconds_mean: 0.01973623540070548
+  -
+    objective: "sphere"
+    dimensions: 30
+    mode: "process"
+    speedup_vs_sequential: 0.019851868488023422
+    total_seconds_mean: 1.6769188160003978
+  -
+    objective: "sphere"
+    dimensions: 30
+    mode: "sequential"
+    speedup_vs_sequential: 1.0
+    total_seconds_mean: 0.033289971800331844
+  -
+    objective: "sphere"
+    dimensions: 30
+    mode: "thread"
+    speedup_vs_sequential: 0.10135521679001232
+    total_seconds_mean: 0.3284485283998947

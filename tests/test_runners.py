@@ -124,7 +124,29 @@ class RunnerTests(unittest.TestCase):
 
             self.assertEqual(process.returncode, 0, msg=process.stderr)
             self.assertIn("'objective': 'sphere'", process.stdout)
-            self.assertTrue((Path(temporary_directory) / "benchmark_suite" / "summary.csv").exists())
+            self.assertTrue((Path(temporary_directory) / "benchmark_suite" / "tables" / "summary" / "summary.csv").exists())
+            self.assertTrue(
+                (Path(temporary_directory) / "benchmark_suite" / "tables" / "per_seed_metrics" / "per_seed_metrics.csv").exists()
+            )
+            self.assertTrue((Path(temporary_directory) / "benchmark_suite" / "tables" / "speedup" / "speedup.csv").exists())
+            self.assertTrue((Path(temporary_directory) / "benchmark_suite" / "tables" / "overhead" / "overhead.csv").exists())
+            self.assertTrue(
+                (
+                    Path(temporary_directory)
+                    / "benchmark_suite"
+                    / "curves"
+                    / "sphere_d2_average_convergence.svg"
+                ).exists()
+            )
+            self.assertTrue(
+                (
+                    Path(temporary_directory)
+                    / "benchmark_suite"
+                    / "boxplots"
+                    / "sphere_d2_final_fitness_boxplot.svg"
+                ).exists()
+            )
+            self.assertFalse((Path(temporary_directory) / "benchmark_suite" / "summary.csv").exists())
 
     def test_make_viz_genera_frames_y_html(self) -> None:
         with TemporaryDirectory() as temporary_directory:

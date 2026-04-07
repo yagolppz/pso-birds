@@ -42,6 +42,124 @@ def render_convergence_svg(history: SwarmHistory, width: int = 900, height: int 
 """
 
 
+def render_average_convergence_svg(
+    curves_by_mode: dict[str, list[float]],
+    title: str,
+    width: int = 960,
+    height: int = 420,
+) -> str:
+    """Dibuja curvas promedio de fitness por iteracion para varios modos."""
+
+    if not curves_by_mode:
+        raise ValueError("Hace falta al menos una curva para renderizar.")
+
+    padding = 48
+    palette = ["#bf5b04", "#2a6f97", "#6a994e", "#8b1e3f", "#7b2cbf", "#c1121f"]
+    dash_patterns = ["12 4", "2 6", "10 3 2 3", "14 4 4 4", "6 3", "16 5 3 5"]
+    values = [value for curve in curves_by_mode.values() for value in curve]
+    min_value = min(values)
+    max_value = max(values)
+    fragments: list[str] = []
+    legend_y = 24
+    plot_width = width - 2 * padding
+    plot_height = height - 2 * padding
+    max_points = max(len(curve) for curve in curves_by_mode.values())
+
+    for index, (mode, curve) in enumerate(sorted(curves_by_mode.items())):
+        color = palette[index % len(palette)]
+        dash_pattern = dash_patterns[index % len(dash_patterns)]
+        points: list[str] = []
+        for position, value in enumerate(curve):
+            x = _scale_value(position, 0, max(1, max_points - 1), padding, padding + plot_width)
+            y = _scale_value(value, min_value, max_value, padding + plot_height, padding)
+            points.append(f"{x:.2f},{y:.2f}")
+        fragments.append(
+            f'<polyline fill="none" stroke="{color}" stroke-width="3" stroke-opacity="0.9" stroke-dasharray="{dash_pattern}" points="{" ".join(points)}" />'
+        )
+        if points:
+            last_x, last_y = points[-1].split(",")
+            fragments.append(
+                f'<circle cx="{last_x}" cy="{last_y}" r="4" fill="{color}" stroke="#fffaf0" stroke-width="1.2" />'
+            )
+        legend_x = padding + index * 140
+        fragments.append(f'<rect x="{legend_x}" y="{legend_y}" width="12" height="12" fill="{color}" rx="2" />')
+        fragments.append(
+            f'<line x1="{legend_x + 18}" y1="{legend_y + 6}" x2="{legend_x + 42}" y2="{legend_y + 6}" stroke="{color}" stroke-width="3" stroke-dasharray="{dash_pattern}" />'
+        )
+        fragments.append(f'<text x="{legend_x + 48}" y="{legend_y + 11}" font-size="12" fill="#3f2d1b">{mode}</text>')
+
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">
+  <rect width="{width}" height="{height}" fill="#f5efe2" />
+  <rect x="{padding}" y="{padding}" width="{plot_width}" height="{plot_height}" fill="#fffaf0" stroke="#66513a" />
+  <text x="{padding}" y="22" font-size="18" fill="#3f2d1b">{title}</text>
+  <text x="{padding}" y="{height - 12}" font-size="12" fill="#6e5740">Iteracion</text>
+  <text x="{width - padding}" y="22" text-anchor="end" font-size="12" fill="#6e5740">Min: {min_value:.6g} | Max: {max_value:.6g}</text>
+  {''.join(fragments)}
+</svg>
+"""
+
+
+def render_boxplot_svg(
+    samples_by_mode: dict[str, list[float]],
+    title: str,
+    width: int = 960,
+    height: int = 420,
+) -> str:
+    """Dibuja boxplots simples comparando fitness final por estrategia."""
+
+    if not samples_by_mode:
+        raise ValueError("Hace falta al menos una serie para renderizar.")
+
+    padding = 52
+    plot_width = width - 2 * padding
+    plot_height = height - 2 * padding
+    values = [value for samples in samples_by_mode.values() for value in samples]
+    min_value = min(values)
+    max_value = max(values)
+    band_width = plot_width / max(1, len(samples_by_mode))
+    fragments: list[str] = []
+    palette = ["#2a6f97", "#bf5b04", "#6a994e", "#8b1e3f", "#7b2cbf", "#c1121f"]
+
+    for index, (mode, samples) in enumerate(sorted(samples_by_mode.items())):
+        ordered = sorted(samples)
+        q1, median, q3 = _quartiles(ordered)
+        low = ordered[0]
+        high = ordered[-1]
+        center_x = padding + band_width * (index + 0.5)
+        box_width = min(72, band_width * 0.48)
+        color = palette[index % len(palette)]
+        q1_y = _scale_value(q1, min_value, max_value, padding + plot_height, padding)
+        median_y = _scale_value(median, min_value, max_value, padding + plot_height, padding)
+        q3_y = _scale_value(q3, min_value, max_value, padding + plot_height, padding)
+        low_y = _scale_value(low, min_value, max_value, padding + plot_height, padding)
+        high_y = _scale_value(high, min_value, max_value, padding + plot_height, padding)
+        fragments.append(
+            f'<line x1="{center_x:.2f}" y1="{low_y:.2f}" x2="{center_x:.2f}" y2="{high_y:.2f}" stroke="#66513a" stroke-width="2" />'
+        )
+        fragments.append(
+            f'<rect x="{center_x - box_width / 2:.2f}" y="{q3_y:.2f}" width="{box_width:.2f}" height="{max(2.0, q1_y - q3_y):.2f}" fill="{color}" fill-opacity="0.22" stroke="{color}" stroke-width="2" rx="6" />'
+        )
+        fragments.append(
+            f'<line x1="{center_x - box_width / 2:.2f}" y1="{median_y:.2f}" x2="{center_x + box_width / 2:.2f}" y2="{median_y:.2f}" stroke="{color}" stroke-width="3" />'
+        )
+        fragments.append(
+            f'<line x1="{center_x - box_width / 3:.2f}" y1="{low_y:.2f}" x2="{center_x + box_width / 3:.2f}" y2="{low_y:.2f}" stroke="#66513a" stroke-width="2" />'
+        )
+        fragments.append(
+            f'<line x1="{center_x - box_width / 3:.2f}" y1="{high_y:.2f}" x2="{center_x + box_width / 3:.2f}" y2="{high_y:.2f}" stroke="#66513a" stroke-width="2" />'
+        )
+        fragments.append(f'<text x="{center_x:.2f}" y="{height - 18}" text-anchor="middle" font-size="12" fill="#3f2d1b">{mode}</text>')
+
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">
+  <rect width="{width}" height="{height}" fill="#f5efe2" />
+  <rect x="{padding}" y="{padding}" width="{plot_width}" height="{plot_height}" fill="#fffaf0" stroke="#66513a" />
+  <text x="{padding}" y="22" font-size="18" fill="#3f2d1b">{title}</text>
+  <text x="{width - padding}" y="22" text-anchor="end" font-size="12" fill="#6e5740">Min: {min_value:.6g} | Max: {max_value:.6g}</text>
+  {''.join(fragments)}
+</svg>
+"""
+
+
 def render_swarm_2d_svg(
     history: SwarmHistory,
     width: int = 960,
@@ -103,6 +221,27 @@ def render_swarm_2d_svg(
   {''.join(fragments)}
 </svg>
 """
+
+
+def _quartiles(samples: list[float]) -> tuple[float, float, float]:
+    if not samples:
+        raise ValueError("La serie no puede estar vacia.")
+    median = _percentile(samples, 0.5)
+    q1 = _percentile(samples, 0.25)
+    q3 = _percentile(samples, 0.75)
+    return q1, median, q3
+
+
+def _percentile(samples: list[float], fraction: float) -> float:
+    if len(samples) == 1:
+        return samples[0]
+    position = (len(samples) - 1) * fraction
+    lower = math.floor(position)
+    upper = math.ceil(position)
+    if lower == upper:
+        return samples[lower]
+    weight = position - lower
+    return samples[lower] * (1.0 - weight) + samples[upper] * weight
 
 
 def write_visualization_artifacts(

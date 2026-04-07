@@ -28,7 +28,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--grid-w", default="0.4,0.7,0.9")
     parser.add_argument("--grid-c1", default="1.3,1.7,2.1")
     parser.add_argument("--grid-c2", default="1.3,1.7,2.1")
-    parser.add_argument("--grid-seeds", default="7,8,9")
+    parser.add_argument("--grid-seeds", default="7,8,9,10,11")
     parser.add_argument("--output-dir", type=Path, default=Path("results"))
     parser.add_argument("--log-file", type=Path, default=None)
     return parser

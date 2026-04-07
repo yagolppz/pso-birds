@@ -76,6 +76,8 @@ class ExperimentTests(unittest.TestCase):
             )
 
             self.assertEqual(summary.mode, "sequential")
+            self.assertEqual(len(summary.seed_rows), 1)
+            self.assertGreater(len(summary.average_history), 0)
             self.assertTrue((output_dir / "sphere" / "sequential" / "run_000" / "animation_2d.gif").exists())
             self.assertTrue((output_dir / "sphere" / "sequential" / "run_000" / "animation_3d.gif").exists())
             self.assertFalse((output_dir / "sphere" / "sequential" / "run_000" / "swarm_3d_frames").exists())
@@ -95,7 +97,33 @@ class ExperimentTests(unittest.TestCase):
             )
 
             self.assertEqual(len(rows), 2)
-            self.assertTrue((Path(temporary_directory) / "benchmark_suite" / "summary.csv").exists())
+            self.assertTrue((Path(temporary_directory) / "benchmark_suite" / "tables" / "summary" / "summary.csv").exists())
+            self.assertTrue(
+                (Path(temporary_directory) / "benchmark_suite" / "tables" / "per_seed_metrics" / "per_seed_metrics.csv").exists()
+            )
+            self.assertTrue(
+                (Path(temporary_directory) / "benchmark_suite" / "tables" / "average_curves" / "average_curves.csv").exists()
+            )
+            self.assertTrue((Path(temporary_directory) / "benchmark_suite" / "tables" / "speedup" / "speedup.csv").exists())
+            self.assertTrue((Path(temporary_directory) / "benchmark_suite" / "tables" / "overhead" / "overhead.csv").exists())
+            self.assertTrue((Path(temporary_directory) / "benchmark_suite" / "tables" / "protocol" / "protocol.json").exists())
+            self.assertTrue(
+                (
+                    Path(temporary_directory)
+                    / "benchmark_suite"
+                    / "curves"
+                    / "sphere_d2_average_convergence.svg"
+                ).exists()
+            )
+            self.assertTrue(
+                (
+                    Path(temporary_directory)
+                    / "benchmark_suite"
+                    / "boxplots"
+                    / "sphere_d2_final_fitness_boxplot.svg"
+                ).exists()
+            )
+            self.assertFalse((Path(temporary_directory) / "benchmark_suite" / "summary.csv").exists())
             self.assertIn("speedup_vs_sequential", rows[0])
 
     def test_benchmark_config_rechaza_workers_no_positivos(self) -> None:
