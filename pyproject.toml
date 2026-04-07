@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=59"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pso-birds"
+version = "0.1.0"
+description = "Sistema PSO modular para evaluacion academica de paralelismo y concurrencia."
+readme = "README.md"
+requires-python = ">=3.10"
+
+[tool.setuptools]
+include-package-data = false
+
+[tool.setuptools.packages.find]
+include = [
+    "core",
+    "core.*",
+    "experiments",
+    "experiments.*",
+    "io",
+    "io.*",
+    "objectives",
+    "objectives.*",
+    "parallel",
+    "parallel.*",
+    "viz",
+    "viz.*",
+]
+exclude = [
+    "results",
+    "results.*",
+    "tests",
+    "tests.*",
+]
