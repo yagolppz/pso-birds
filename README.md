@@ -9,7 +9,7 @@ El objetivo del trabajo no es modificar el comportamiento matematico del algorit
 ## 2. Estructura del proyecto
 
 - `core/`: implementacion principal del algoritmo PSO, configuracion, tipos, resultados y utilidades base de benchmark.
-- `objectives/`: funciones objetivo disponibles para los experimentos (`sphere`, `sleepy_sphere`, `ackley`, `rastrigin`, `rosenbrock`).
+- `objectives/`: funciones objetivo disponibles para los experimentos (`sphere`, `ackley`, `rastrigin`, `rosenbrock`).
 - `parallel/`: estrategias de evaluacion del fitness.
 - `experiments/`: ejecucion de benchmarks y grid search.
 - `io/`: persistencia de resultados y tablas agregadas.
