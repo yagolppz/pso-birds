@@ -9,7 +9,7 @@ El objetivo del trabajo no es modificar el comportamiento matematico del algorit
 ## 2. Estructura del proyecto
 
 - `core/`: implementacion principal del algoritmo PSO, configuracion, tipos, resultados y utilidades base de benchmark.
-- `objectives/`: funciones objetivo disponibles para los experimentos (`sphere`, `ackley`, `rastrigin`, `rosenbrock`).
+- `objectives/`: funciones objetivo disponibles para los experimentos (`sphere`, `sleepy_sphere`, `ackley`, `rastrigin`, `rosenbrock`).
 - `parallel/`: estrategias de evaluacion del fitness.
 - `experiments/`: ejecucion de benchmarks y grid search.
 - `io/`: persistencia de resultados y tablas agregadas.
@@ -41,35 +41,76 @@ El proyecto puede instalarse en modo editable con:
 python3 -m pip install -e .
 ```
 
+Dependencias practicas del proyecto:
+
+- `numpy`: obligatorio para las funciones objetivo vectorizadas y el modo `numpy`.
+- `Pillow`: necesario para generar animaciones `gif`.
+- `imageio`: opcional, solo necesario para exportar animaciones `mp4`.
+
+Si el entorno no las incluye ya, puede ser necesario instalarlas manualmente.
+
 ## 4. Uso basico
 
 Ejecucion simple del optimizador:
 
 ```bash
-python3 run_pso.py
+python3 run_pso.py --objective sphere --mode sequential --dimensions 2 --birds 30 --flights 80
 ```
 
-Suite de benchmarks:
+Benchmark individual sobre una configuracion concreta:
 
 ```bash
-python3 run_benchmarks.py
+python3 run_benchmarks.py run --objective sphere --mode sequential --dimensions 2 --birds 20 --flights 30 --repetitions 1
+```
+
+Comparacion entre `sequential` y otra estrategia:
+
+```bash
+python3 run_benchmarks.py compare --objective sleepy_sphere --candidate-mode process --dimensions 10 --birds 20 --flights 30 --repetitions 3 --workers 4
+```
+
+Suite reproducible completa:
+
+```bash
+python3 run_benchmarks.py --objectives sphere,ackley,rastrigin,rosenbrock --dimensions 2,10,30 --modes sequential,thread,process,asyncio,numpy --birds 12 --flights 20 --repetitions 5
 ```
 
 Grid search:
 
 ```bash
-python3 run_grid_search.py
+python3 run_grid_search.py --objective sphere --mode sequential --dimensions 2 --grid-w 0.4,0.7,0.9 --grid-c1 1.3,1.7,2.1 --grid-c2 1.3,1.7,2.1 --grid-seeds 7,8,9,10,11
 ```
 
-Generacion de visualizaciones:
+Generacion de visualizaciones y animaciones:
 
 ```bash
-python3 make_viz.py
+python3 make_viz.py --objective sphere --mode sequential --dimensions 2 --export gif
 ```
 
 Los scripts aceptan argumentos adicionales para fijar objetivo, dimension, numero de particulas, numero de iteraciones, modo de ejecucion, directorio de salida y otras opciones del experimento.
 
-## 5. Estrategias implementadas
+Argumentos importantes expuestos por CLI:
+
+- `--workers`: numero de workers para `thread`, `process` y `asyncio`.
+- `--seed`: semilla reproducible.
+- `--w`, `--c1`, `--c2`: hiperparametros del PSO.
+- `--lower-bound`, `--upper-bound`: limites explicitos del espacio de busqueda.
+- `--velocity-limit-factor`: factor de limite de velocidad por dimension.
+- `--stop-when-crumbs-below`: parada temprana por umbral de fitness.
+- `--output-dir`: directorio de salida.
+- `--log-file`: fichero opcional de logging.
+
+La configuracion de ejecucion se hace por CLI. El proyecto genera salidas en YAML, pero no usa YAML como formato de entrada para configurar experimentos.
+
+## 5. Objetivos implementados
+
+- `sphere`
+- `ackley`
+- `rastrigin`
+- `rosenbrock`
+- `sleepy_sphere`: variante artificialmente lenta de `sphere` pensada para estudiar mejor el impacto del coste de evaluacion y del paralelismo.
+
+## 6. Estrategias implementadas
 
 - `sequential`: version base sin paralelismo. Se usa como referencia para comparar tiempos.
 - `thread`: paralelismo con hilos. Reutiliza memoria compartida, pero puede verse limitado por el GIL.
@@ -77,7 +118,9 @@ Los scripts aceptan argumentos adicionales para fijar objetivo, dimension, numer
 - `asyncio`: coordinacion asincrona de tareas concurrentes.
 - `numpy`: evaluacion vectorizada mediante operaciones sobre arrays.
 
-## 6. Protocolo experimental
+Nota: `numpy` no es paralelismo clasico, sino evaluacion vectorizada. En el repositorio se trata como una estrategia adicional de ejecucion para comparar rendimiento.
+
+## 7. Protocolo experimental
 
 La suite experimental se ha preparado para un protocolo reproducible centrado en comparar estrategias de ejecucion:
 
@@ -95,7 +138,31 @@ Las metricas principales analizadas son:
 
 La salida agregada se guarda en `results/benchmark_suite/`, mientras que las ejecuciones crudas de cada campaña se guardan en `results/benchmark_suite/campaign_runs/`.
 
-## 7. Resultados y analisis
+Importante: la suite necesita incluir el modo `sequential`, ya que se usa como baseline para calcular `speedup_vs_sequential`.
+
+## 8. Persistencia y artefactos
+
+El proyecto guarda resultados en varios formatos:
+
+- `result.json` y `result.yaml`: resultado completo de una ejecucion.
+- `history.csv`: historial por iteracion.
+- `flights.jsonl`: eventos estructurados del vuelo y snapshots del experimento.
+- `summary.json` y `summary.yaml`: resumen agregado por modo y objetivo.
+- `comparison.json` y `comparison.yaml`: comparacion entre `sequential` y otro modo.
+- `grid_search.csv`, `grid_search.json` y `grid_search.yaml`: resultados del grid search.
+- tablas agregadas de la suite en `results/benchmark_suite/tables/`.
+
+Las visualizaciones generadas pueden incluir:
+
+- `convergence.svg`
+- `swarm_2d.svg`
+- `swarm_2d.html`
+- `swarm_3d.html`
+- `animation_2d.gif`
+- `animation_3d.gif`
+- exportacion opcional a `mp4`
+
+## 9. Resultados y analisis
 
 La interpretacion del experimento se apoya en una idea central: el algoritmo base no cambia entre estrategias. Por eso, el fitness final esperado debe ser comparable entre `sequential`, `thread`, `process`, `asyncio` y `numpy` cuando se usan la misma funcion objetivo, la misma dimension, las mismas seeds y los mismos hiperparametros.
 
@@ -108,7 +175,7 @@ Por tanto, el analisis principal del trabajo se centra en los tiempos:
 
 Una estrategia puede no mejorar a `sequential` si el coste de coordinacion, serializacion o gestion de tareas supera el trabajo util que se paraleliza.
 
-## 8. Validacion
+## 10. Validacion
 
 Para ejecutar la bateria de tests:
 
@@ -132,8 +199,8 @@ El proyecto cubre la gran parte de los requisitos del enunciado. Estas son las c
 
 ### Lo que no dio tiempo a finalizar
 
-- **Criterio de parada por tolerancia o estancamiento**  
-  El enunciado pide parada por iteraciones, tolerancia y estancamiento. Solo se implementan iteraciones fijas. El early stopping se queda pendiente.
+- **Criterio de parada por estancamiento**  
+  El proyecto si implementa parada temprana por umbral de fitness con `--stop-when-crumbs-below`, pero no incorpora una regla especifica de parada por estancamiento.
 
 - **Informacion de hardware en los resultados**  
   El enunciado dice "info de hardware si se puede". No se ha sabido hacerlo de forma limpia y se han priorizado otras cosas.
@@ -148,7 +215,7 @@ El proyecto cubre la gran parte de los requisitos del enunciado. Estas son las c
 
 ### Lo que funciona correctamente
 
-El PSO base, las 5 estrategias de paralelismo (sequential, thread, process, asyncio, numpy), la persistencia en multiples formatos, el grid search basico, las visualizaciones y los tests. El docente puede ejecutar los scripts y verificar los resultados en la carpeta `results/`.
+El PSO base, las 5 estrategias de ejecucion (`sequential`, `thread`, `process`, `asyncio`, `numpy`), la persistencia en multiples formatos, el grid search basico, las visualizaciones, el logging estructurado y los tests. El docente puede ejecutar los scripts y verificar los resultados en la carpeta `results/`.
 
 ### Conclusion personal
 
