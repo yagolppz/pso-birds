@@ -4,6 +4,7 @@ from .ackley import ackley_definition
 from .rastrigin import rastrigin_definition
 from .rosenbrock import rosenbrock_definition
 from .sphere import sleepy_sphere_definition, sphere_definition
+from .wifi_router import wifi_router_definition
 
 OBJECTIVES = {
     "sphere": sphere_definition(),
@@ -11,6 +12,7 @@ OBJECTIVES = {
     "rastrigin": rastrigin_definition(),
     "ackley": ackley_definition(),
     "rosenbrock": rosenbrock_definition(),
+    "wifi_router": wifi_router_definition(),
 }
 
 
