@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 from core.config import ArtifactConfig
+from core.metadata import build_reproducibility_metadata
 from core.results import BenchmarkResult, FlightResult
 
 
@@ -37,6 +38,12 @@ class ArtifactWriter:
         payload = run.as_dict()
         if metadata is not None:
             payload["config"] = metadata
+        payload["metadata"] = build_reproducibility_metadata(
+            {
+                **(metadata or {}),
+                "mode": mode,
+            }
+        )
         if self.config.save_json:
             self._write_json(directory / "result.json", payload)
         if self.config.save_yaml:
@@ -57,6 +64,12 @@ class ArtifactWriter:
         payload = summary.as_dict()
         if metadata is not None:
             payload["config"] = metadata
+        payload["metadata"] = build_reproducibility_metadata(
+            {
+                **(metadata or {}),
+                "mode": mode,
+            }
+        )
         if self.config.save_json:
             self._write_json(directory / "summary.json", payload)
         if self.config.save_yaml:
@@ -79,6 +92,12 @@ class ArtifactWriter:
         }
         if metadata is not None:
             payload["config"] = metadata
+        payload["metadata"] = build_reproducibility_metadata(
+            {
+                **(metadata or {}),
+                "mode": candidate_mode,
+            }
+        )
         if self.config.save_json:
             self._write_json(directory / "comparison.json", payload)
         if self.config.save_yaml:
@@ -97,6 +116,12 @@ class ArtifactWriter:
         payload = {"rows": rows}
         if metadata is not None:
             payload["config"] = metadata
+        payload["metadata"] = build_reproducibility_metadata(
+            {
+                **(metadata or {}),
+                "mode": mode,
+            }
+        )
         if self.config.save_json:
             self._write_json(directory / "grid_search.json", payload)
         if self.config.save_yaml:
