@@ -11,3 +11,11 @@ def measure_crumbs(arguments: tuple[ObjectiveFunction, Vector]) -> float:
 
     objective, position = arguments
     return objective(position)
+
+
+def measure_crumbs_batch(arguments: tuple[ObjectiveFunction, list[Vector]]) -> list[float]:
+    """Cuenta las migas de un lote de pajaritos en posiciones concretas."""
+
+    objective, positions = arguments
+    return [objective(position) for position in positions]
+
