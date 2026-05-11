@@ -37,6 +37,7 @@ class SwarmConfig:
     social_weight: float = 1.7
     random_seed: int = 7
     stop_when_crumbs_below: float | None = None
+    stop_after_stagnant_flights: int | None = None
     velocity_limit_factor: float = 0.2
 
     def __post_init__(self) -> None:
@@ -50,6 +51,8 @@ class SwarmConfig:
             raise ValueError("Los pesos de memoria y cooperacion no pueden ser negativos.")
         if self.velocity_limit_factor <= 0:
             raise ValueError("El limite de velocidad debe ser positivo.")
+        if self.stop_after_stagnant_flights is not None and self.stop_after_stagnant_flights <= 0:
+            raise ValueError("stop_after_stagnant_flights debe ser un entero positivo o None.")
 
 
 @dataclass(slots=True)

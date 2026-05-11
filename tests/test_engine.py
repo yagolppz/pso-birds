@@ -1,7 +1,10 @@
 import unittest
 
+import numpy as np
+
 from core.config import SearchSpaceConfig, SwarmConfig
 from core.pso import BirdSwarmOptimizer
+from core.types import ObjectiveDefinition
 from objectives import get_objective
 from parallel import CrumbEvaluator, build_fitness_evaluator
 
@@ -116,6 +119,85 @@ class EngineTests(unittest.TestCase):
             [snapshot.treasure_crumbs for snapshot in first_result.history.snapshots],
             [snapshot.treasure_crumbs for snapshot in second_result.history.snapshots],
         )
+
+    def test_stop_after_stagnant_flights_none_preserva_comportamiento(self) -> None:
+        objective = ObjectiveDefinition(
+            name="constant",
+            description="Objetivo constante para probar parada por estancamiento.",
+            scalar_function=lambda position: 1.0,
+            vectorized_function=lambda positions: np.full((positions.shape[0],), 1.0),
+            suggested_lower_bound=-1.0,
+            suggested_upper_bound=1.0,
+        )
+        optimizer = BirdSwarmOptimizer(
+            swarm_config=SwarmConfig(
+                birds=8,
+                flights=5,
+                random_seed=13,
+            ),
+            search_space=SearchSpaceConfig(dimensions=2, lower_bound=-1.0, upper_bound=1.0),
+            evaluator=CrumbEvaluator(mode="sequential"),
+        )
+
+        result = optimizer.run(objective, include_history=False)
+
+        self.assertEqual(result.flights_completed, 5)
+
+    def test_stop_after_stagnant_flights_detiene_antes_si_no_hay_mejora(self) -> None:
+        objective = ObjectiveDefinition(
+            name="constant",
+            description="Objetivo constante que no mejora entre vuelos.",
+            scalar_function=lambda position: 42.0,
+            vectorized_function=lambda positions: np.full((positions.shape[0],), 42.0),
+            suggested_lower_bound=-1.0,
+            suggested_upper_bound=1.0,
+        )
+        optimizer = BirdSwarmOptimizer(
+            swarm_config=SwarmConfig(
+                birds=8,
+                flights=10,
+                stop_after_stagnant_flights=2,
+                random_seed=17,
+            ),
+            search_space=SearchSpaceConfig(dimensions=2, lower_bound=-1.0, upper_bound=1.0),
+            evaluator=CrumbEvaluator(mode="sequential"),
+        )
+
+        result = optimizer.run(objective, include_history=False)
+
+        self.assertEqual(result.flights_completed, 2)
+
+    def test_stop_when_crumbs_below_sigue_funcionando_con_stagnation(self) -> None:
+        objective = ObjectiveDefinition(
+            name="constant",
+            description="Objetivo constante para probar el umbral de parada.",
+            scalar_function=lambda position: 42.0,
+            vectorized_function=lambda positions: np.full((positions.shape[0],), 42.0),
+            suggested_lower_bound=-1.0,
+            suggested_upper_bound=1.0,
+        )
+        optimizer = BirdSwarmOptimizer(
+            swarm_config=SwarmConfig(
+                birds=8,
+                flights=10,
+                stop_after_stagnant_flights=5,
+                stop_when_crumbs_below=50.0,
+                random_seed=23,
+            ),
+            search_space=SearchSpaceConfig(dimensions=2, lower_bound=-1.0, upper_bound=1.0),
+            evaluator=CrumbEvaluator(mode="sequential"),
+        )
+
+        result = optimizer.run(objective, include_history=False)
+
+        self.assertEqual(result.flights_completed, 1)
+
+    def test_stop_after_stagnant_flights_valor_no_positivo_falla(self) -> None:
+        with self.assertRaisesRegex(ValueError, "stop_after_stagnant_flights"):
+            SwarmConfig(birds=5, flights=5, stop_after_stagnant_flights=0)
+
+        with self.assertRaisesRegex(ValueError, "stop_after_stagnant_flights"):
+            SwarmConfig(birds=5, flights=5, stop_after_stagnant_flights=-3)
 
     def test_historial_guarda_particulas_dentro_del_parque(self) -> None:
         objective = get_objective("sphere")

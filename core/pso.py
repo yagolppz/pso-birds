@@ -74,6 +74,8 @@ class BirdSwarmOptimizer:
         self._log_flight(0, treasure, first_evaluation, 0.0, first_total, first_overhead)
 
         flights_completed = 0
+        stagnant_flights = 0
+        previous_best_crumbs = treasure.crumbs
         for flight_number in range(1, self.swarm_config.flights + 1):
             flights_completed = flight_number
             iteration_start = time.perf_counter()
@@ -104,6 +106,16 @@ class BirdSwarmOptimizer:
             threshold = self.swarm_config.stop_when_crumbs_below
             if threshold is not None and treasure.crumbs <= threshold:
                 break
+
+            stop_after_stagnant_flights = self.swarm_config.stop_after_stagnant_flights
+            if stop_after_stagnant_flights is not None:
+                if treasure.crumbs < previous_best_crumbs:
+                    stagnant_flights = 0
+                    previous_best_crumbs = treasure.crumbs
+                else:
+                    stagnant_flights += 1
+                if stagnant_flights >= stop_after_stagnant_flights:
+                    break
 
         total_seconds = time.perf_counter() - total_start
         result = FlightResult(
