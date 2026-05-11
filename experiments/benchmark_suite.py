@@ -48,6 +48,7 @@ def build_suite_parser() -> argparse.ArgumentParser:
     parser.add_argument("--flights", type=int, default=20)
     parser.add_argument("--repetitions", type=int, default=len(DEFAULT_PROTOCOL_SEEDS))
     parser.add_argument("--workers", type=int, default=None)
+    parser.add_argument("--batch-size", type=int, default=None)
     parser.add_argument("--seed", type=int, default=DEFAULT_PROTOCOL_SEEDS[0])
     parser.add_argument("--output-dir", type=Path, default=Path("results"))
     parser.add_argument("--log-file", type=Path, default=None)
@@ -66,6 +67,7 @@ def main_compare_cli() -> None:
         evaluator_mode=getattr(args, "mode", "sequential"),
         repetitions=args.repetitions,
         workers=args.workers,
+        batch_size=args.batch_size,
         artifacts=ArtifactConfig(output_directory=args.output_dir),
     )
 
@@ -93,6 +95,7 @@ def main_suite_cli() -> None:
         flights=args.flights,
         repetitions=args.repetitions,
         workers=args.workers,
+        batch_size=args.batch_size,
         seed=args.seed,
         output_directory=args.output_dir,
     )
@@ -110,6 +113,7 @@ def run_benchmark_suite(
     workers: int | None,
     seed: int,
     output_directory: Path,
+    batch_size: int | None = None,
 ) -> list[dict[str, object]]:
     """Ejecuta la suite completa de benchmarks y resume speedups."""
 
@@ -145,6 +149,7 @@ def run_benchmark_suite(
                         evaluator_mode=mode,
                         repetitions=repetitions,
                         workers=workers,
+                        batch_size=batch_size,
                         include_history=True,
                         artifacts=ArtifactConfig(output_directory=campaign_output_directory),
                     )
@@ -175,6 +180,7 @@ def run_benchmark_suite(
                         "flights": flights,
                         "repetitions": repetitions,
                         "workers": workers,
+                        "batch_size": batch_size,
                         "best_crumbs_mean": summary.best_crumbs_mean,
                         "best_crumbs_final": summary.best_run.best_crumbs,
                         "total_seconds_mean": summary.timings.total_seconds_mean,

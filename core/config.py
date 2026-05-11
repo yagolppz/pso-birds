@@ -77,6 +77,7 @@ class BenchmarkConfig:
     evaluator_mode: str = "sequential"
     repetitions: int = 1
     workers: int | None = None
+    batch_size: int | None = None
     include_history: bool = True
     artifacts: ArtifactConfig = field(default_factory=ArtifactConfig)
 

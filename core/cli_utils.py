@@ -23,6 +23,7 @@ def add_common_pso_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--c2", type=float, default=1.7)
     parser.add_argument("--seed", type=int, default=7)
     parser.add_argument("--workers", type=int, default=None)
+    parser.add_argument("--batch-size", type=int, default=None)
     parser.add_argument("--lower-bound", type=float, default=None)
     parser.add_argument("--upper-bound", type=float, default=None)
     parser.add_argument("--stop-when-crumbs-below", type=float, default=None)

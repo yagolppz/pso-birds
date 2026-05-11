@@ -40,7 +40,7 @@ def main() -> None:
     optimizer = BirdSwarmOptimizer(
         swarm_config=swarm_config,
         search_space=search_space,
-        evaluator=build_fitness_evaluator(mode=args.mode, workers=args.workers),
+        evaluator=build_fitness_evaluator(mode=args.mode, workers=args.workers, batch_size=args.batch_size),
         logger=JsonLinesBirdLogger.for_directory(run_directory, enabled=artifact_config.save_jsonl_log),
     )
     result = optimizer.run(objective, include_history=True)
@@ -53,6 +53,7 @@ def main() -> None:
             "objective": objective.name,
             "mode": args.mode,
             "workers": args.workers,
+            "batch_size": args.batch_size,
             "search_space": asdict(search_space),
             "swarm": asdict(swarm_config),
         },

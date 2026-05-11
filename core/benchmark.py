@@ -24,7 +24,7 @@ def run_benchmark(config: BenchmarkConfig) -> BenchmarkResult:
         optimizer = BirdSwarmOptimizer(
             swarm_config=_swarm_for_repetition(config.swarm, repetition),
             search_space=config.search_space,
-            evaluator=build_fitness_evaluator(mode=config.evaluator_mode, workers=config.workers),
+            evaluator=build_fitness_evaluator(mode=config.evaluator_mode, workers=config.workers, batch_size=config.batch_size),
             logger=JsonLinesBirdLogger.for_directory(run_directory, enabled=config.artifacts.save_jsonl_log),
         )
         run = optimizer.run(config.objective, include_history=config.include_history)
@@ -95,6 +95,7 @@ def compare_benchmark(config: BenchmarkConfig, candidate_mode: str, workers: int
             evaluator_mode=candidate_mode,
             repetitions=config.repetitions,
             workers=workers,
+            batch_size=config.batch_size,
             include_history=config.include_history,
             artifacts=config.artifacts,
         )
@@ -142,6 +143,7 @@ def grid_search_benchmark(
                     evaluator_mode=run_mode,
                     repetitions=config.repetitions,
                     workers=config.workers,
+                    batch_size=config.batch_size,
                     include_history=config.include_history,
                     artifacts=config.artifacts,
                 )
@@ -171,6 +173,7 @@ def _run_metadata(config: BenchmarkConfig, repetition: int) -> dict[str, object]
         "mode": config.evaluator_mode,
         "repetition": repetition,
         "workers": config.workers,
+        "batch_size": config.batch_size,
         "search_space": asdict(config.search_space),
         "swarm": asdict(swarm),
     }
@@ -181,6 +184,7 @@ def _benchmark_metadata(config: BenchmarkConfig, mode: str) -> dict[str, object]
         "objective": config.objective.name,
         "mode": mode,
         "workers": config.workers,
+        "batch_size": config.batch_size,
         "repetitions": config.repetitions,
         "seeds": [config.swarm.random_seed + repetition for repetition in range(config.repetitions)],
         "search_space": asdict(config.search_space),

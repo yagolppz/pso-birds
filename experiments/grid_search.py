@@ -24,6 +24,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--flights", type=int, default=30)
     parser.add_argument("--repetitions", type=int, default=1)
     parser.add_argument("--workers", type=int, default=None)
+    parser.add_argument("--batch-size", type=int, default=None)
     parser.add_argument("--seed", type=int, default=7)
     parser.add_argument("--grid-w", default="0.4,0.7,0.9")
     parser.add_argument("--grid-c1", default="1.3,1.7,2.1")
@@ -50,6 +51,7 @@ def main() -> None:
         evaluator_mode=args.mode,
         repetitions=args.repetitions,
         workers=args.workers,
+        batch_size=args.batch_size,
         include_history=False,
         artifacts=ArtifactConfig(output_directory=args.output_dir),
     )
