@@ -1,0 +1,544 @@
+{
+  "rows": [
+    {
+      "objective": "ackley",
+      "dimensions": 2,
+      "mode": "asyncio",
+      "overhead_seconds_mean": 0.052724870002142175,
+      "overhead_ratio_mean": 0.5986583230807838,
+      "evaluation_seconds_mean": 0.0341043683326158,
+      "update_seconds_mean": 0.0012424846654539579
+    },
+    {
+      "objective": "ackley",
+      "dimensions": 2,
+      "mode": "numpy",
+      "overhead_seconds_mean": 0.10604773933543281,
+      "overhead_ratio_mean": 0.7544205027957032,
+      "evaluation_seconds_mean": 0.03329641766473893,
+      "update_seconds_mean": 0.001224317666734957
+    },
+    {
+      "objective": "ackley",
+      "dimensions": 2,
+      "mode": "process",
+      "overhead_seconds_mean": 0.05681567833319908,
+      "overhead_ratio_mean": 0.01912781035068715,
+      "evaluation_seconds_mean": 2.9103138240000894,
+      "update_seconds_mean": 0.0031884426665177066
+    },
+    {
+      "objective": "ackley",
+      "dimensions": 2,
+      "mode": "sequential",
+      "overhead_seconds_mean": 0.011117452996889673,
+      "overhead_ratio_mean": 0.7906704121929999,
+      "evaluation_seconds_mean": 0.0013252740009193076,
+      "update_seconds_mean": 0.0016180660019623854
+    },
+    {
+      "objective": "ackley",
+      "dimensions": 2,
+      "mode": "thread",
+      "overhead_seconds_mean": 0.036206577666841135,
+      "overhead_ratio_mean": 0.03927165933435681,
+      "evaluation_seconds_mean": 0.8840311856683911,
+      "update_seconds_mean": 0.001714053331852483
+    },
+    {
+      "objective": "ackley",
+      "dimensions": 10,
+      "mode": "asyncio",
+      "overhead_seconds_mean": 0.06247712933266788,
+      "overhead_ratio_mean": 0.4777743189217575,
+      "evaluation_seconds_mean": 0.05999486033366944,
+      "update_seconds_mean": 0.008295041666921557
+    },
+    {
+      "objective": "ackley",
+      "dimensions": 10,
+      "mode": "numpy",
+      "overhead_seconds_mean": 0.018978871999631036,
+      "overhead_ratio_mean": 0.33561479288687907,
+      "evaluation_seconds_mean": 0.03156035433342671,
+      "update_seconds_mean": 0.006010343000222444
+    },
+    {
+      "objective": "ackley",
+      "dimensions": 10,
+      "mode": "process",
+      "overhead_seconds_mean": 0.13004005500079074,
+      "overhead_ratio_mean": 0.0338814380399492,
+      "evaluation_seconds_mean": 3.6492670153329527,
+      "update_seconds_mean": 0.05878430133301057
+    },
+    {
+      "objective": "ackley",
+      "dimensions": 10,
+      "mode": "sequential",
+      "overhead_seconds_mean": 0.09496609199807911,
+      "overhead_ratio_mean": 0.8950429834947502,
+      "evaluation_seconds_mean": 0.002839840334672772,
+      "update_seconds_mean": 0.008296337333983198
+    },
+    {
+      "objective": "ackley",
+      "dimensions": 10,
+      "mode": "thread",
+      "overhead_seconds_mean": 0.08795347200005683,
+      "overhead_ratio_mean": 0.10698152485057959,
+      "evaluation_seconds_mean": 0.7284443266671587,
+      "update_seconds_mean": 0.005739220999506263
+    },
+    {
+      "objective": "ackley",
+      "dimensions": 30,
+      "mode": "asyncio",
+      "overhead_seconds_mean": 0.08260162233212516,
+      "overhead_ratio_mean": 0.5540906870042975,
+      "evaluation_seconds_mean": 0.038514354332619405,
+      "update_seconds_mean": 0.027960021668150148
+    },
+    {
+      "objective": "ackley",
+      "dimensions": 30,
+      "mode": "numpy",
+      "overhead_seconds_mean": 0.018248236665992106,
+      "overhead_ratio_mean": 0.34897114384364397,
+      "evaluation_seconds_mean": 0.01118901766737205,
+      "update_seconds_mean": 0.022854280333376664
+    },
+    {
+      "objective": "ackley",
+      "dimensions": 30,
+      "mode": "process",
+      "overhead_seconds_mean": 0.09913729433325595,
+      "overhead_ratio_mean": 0.0337014445121097,
+      "evaluation_seconds_mean": 2.78344446766611,
+      "update_seconds_mean": 0.05905162400085828
+    },
+    {
+      "objective": "ackley",
+      "dimensions": 30,
+      "mode": "sequential",
+      "overhead_seconds_mean": 0.02049009466645657,
+      "overhead_ratio_mean": 0.4195625030974307,
+      "evaluation_seconds_mean": 0.004387800665729931,
+      "update_seconds_mean": 0.023958915667814534
+    },
+    {
+      "objective": "ackley",
+      "dimensions": 30,
+      "mode": "thread",
+      "overhead_seconds_mean": 0.03476788866616213,
+      "overhead_ratio_mean": 0.0468895935703235,
+      "evaluation_seconds_mean": 0.6853259486673172,
+      "update_seconds_mean": 0.021390274999854835
+    },
+    {
+      "objective": "rastrigin",
+      "dimensions": 2,
+      "mode": "asyncio",
+      "overhead_seconds_mean": 0.0697376740014685,
+      "overhead_ratio_mean": 0.3905707512784241,
+      "evaluation_seconds_mean": 0.09461235266644508,
+      "update_seconds_mean": 0.014203215665778165
+    },
+    {
+      "objective": "rastrigin",
+      "dimensions": 2,
+      "mode": "numpy",
+      "overhead_seconds_mean": 0.027501347996197485,
+      "overhead_ratio_mean": 0.8653713121866732,
+      "evaluation_seconds_mean": 0.002762798002246806,
+      "update_seconds_mean": 0.0015156780018514837
+    },
+    {
+      "objective": "rastrigin",
+      "dimensions": 2,
+      "mode": "process",
+      "overhead_seconds_mean": 0.1615037753335855,
+      "overhead_ratio_mean": 0.0480371549271646,
+      "evaluation_seconds_mean": 3.1960600500002934,
+      "update_seconds_mean": 0.004495721665989549
+    },
+    {
+      "objective": "rastrigin",
+      "dimensions": 2,
+      "mode": "sequential",
+      "overhead_seconds_mean": 0.04498434099908385,
+      "overhead_ratio_mean": 0.9609743151027729,
+      "evaluation_seconds_mean": 0.0005947579999580436,
+      "update_seconds_mean": 0.001232080334375496
+    },
+    {
+      "objective": "rastrigin",
+      "dimensions": 2,
+      "mode": "thread",
+      "overhead_seconds_mean": 0.04468990000047294,
+      "overhead_ratio_mean": 0.04866812419539643,
+      "evaluation_seconds_mean": 0.8679155183326657,
+      "update_seconds_mean": 0.00565269700018689
+    },
+    {
+      "objective": "rastrigin",
+      "dimensions": 10,
+      "mode": "asyncio",
+      "overhead_seconds_mean": 0.012241985335094796,
+      "overhead_ratio_mean": 0.3131457829955924,
+      "evaluation_seconds_mean": 0.023810151332327223,
+      "update_seconds_mean": 0.0030414293323701713
+    },
+    {
+      "objective": "rastrigin",
+      "dimensions": 10,
+      "mode": "numpy",
+      "overhead_seconds_mean": 0.047556074666620894,
+      "overhead_ratio_mean": 0.8407037190804806,
+      "evaluation_seconds_mean": 0.00474534666651986,
+      "update_seconds_mean": 0.004265563666801124
+    },
+    {
+      "objective": "rastrigin",
+      "dimensions": 10,
+      "mode": "process",
+      "overhead_seconds_mean": 0.054558818000259635,
+      "overhead_ratio_mean": 0.02421643940747487,
+      "evaluation_seconds_mean": 2.1798697540001135,
+      "update_seconds_mean": 0.018537567333017552
+    },
+    {
+      "objective": "rastrigin",
+      "dimensions": 10,
+      "mode": "sequential",
+      "overhead_seconds_mean": 0.046853238666699326,
+      "overhead_ratio_mean": 0.846407427972051,
+      "evaluation_seconds_mean": 0.001814250666636023,
+      "update_seconds_mean": 0.006687930666885222
+    },
+    {
+      "objective": "rastrigin",
+      "dimensions": 10,
+      "mode": "thread",
+      "overhead_seconds_mean": 0.053499163999731536,
+      "overhead_ratio_mean": 0.06035709705151113,
+      "evaluation_seconds_mean": 0.8263034533323056,
+      "update_seconds_mean": 0.006574737000846653
+    },
+    {
+      "objective": "rastrigin",
+      "dimensions": 30,
+      "mode": "asyncio",
+      "overhead_seconds_mean": 0.012373104001198953,
+      "overhead_ratio_mean": 0.22861139268942146,
+      "evaluation_seconds_mean": 0.025105259999084712,
+      "update_seconds_mean": 0.016644502999649074
+    },
+    {
+      "objective": "rastrigin",
+      "dimensions": 30,
+      "mode": "numpy",
+      "overhead_seconds_mean": 0.026892151664469566,
+      "overhead_ratio_mean": 0.44968826027929015,
+      "evaluation_seconds_mean": 0.0035768103355925027,
+      "update_seconds_mean": 0.029332802999912626
+    },
+    {
+      "objective": "rastrigin",
+      "dimensions": 30,
+      "mode": "process",
+      "overhead_seconds_mean": 0.07057113966645072,
+      "overhead_ratio_mean": 0.02698823262590188,
+      "evaluation_seconds_mean": 2.517623483000231,
+      "update_seconds_mean": 0.026690933000281802
+    },
+    {
+      "objective": "rastrigin",
+      "dimensions": 30,
+      "mode": "sequential",
+      "overhead_seconds_mean": 0.016936210664425744,
+      "overhead_ratio_mean": 0.5353141084960806,
+      "evaluation_seconds_mean": 0.0029465800025718636,
+      "update_seconds_mean": 0.011755102666332581
+    },
+    {
+      "objective": "rastrigin",
+      "dimensions": 30,
+      "mode": "thread",
+      "overhead_seconds_mean": 0.04099814733278132,
+      "overhead_ratio_mean": 0.045559736374827416,
+      "evaluation_seconds_mean": 0.8118047000007209,
+      "update_seconds_mean": 0.04707389899976988
+    },
+    {
+      "objective": "rosenbrock",
+      "dimensions": 2,
+      "mode": "asyncio",
+      "overhead_seconds_mean": 0.01678408300085721,
+      "overhead_ratio_mean": 0.5337188452384,
+      "evaluation_seconds_mean": 0.013638386666267857,
+      "update_seconds_mean": 0.0010249546661119286
+    },
+    {
+      "objective": "rosenbrock",
+      "dimensions": 2,
+      "mode": "numpy",
+      "overhead_seconds_mean": 0.018439397334077512,
+      "overhead_ratio_mean": 0.8041038078721381,
+      "evaluation_seconds_mean": 0.0021093913334577032,
+      "update_seconds_mean": 0.0023828243326230827
+    },
+    {
+      "objective": "rosenbrock",
+      "dimensions": 2,
+      "mode": "process",
+      "overhead_seconds_mean": 0.08667175066784694,
+      "overhead_ratio_mean": 0.032047409999628074,
+      "evaluation_seconds_mean": 2.611390342000353,
+      "update_seconds_mean": 0.0064232516654859255
+    },
+    {
+      "objective": "rosenbrock",
+      "dimensions": 2,
+      "mode": "sequential",
+      "overhead_seconds_mean": 0.02989611299835815,
+      "overhead_ratio_mean": 0.9161178148247376,
+      "evaluation_seconds_mean": 0.0012400713336925644,
+      "update_seconds_mean": 0.0014972963344916934
+    },
+    {
+      "objective": "rosenbrock",
+      "dimensions": 2,
+      "mode": "thread",
+      "overhead_seconds_mean": 0.04188491200087204,
+      "overhead_ratio_mean": 0.05754356365469988,
+      "evaluation_seconds_mean": 0.6841166909992656,
+      "update_seconds_mean": 0.0018801849998150526
+    },
+    {
+      "objective": "rosenbrock",
+      "dimensions": 10,
+      "mode": "asyncio",
+      "overhead_seconds_mean": 0.054491714334593176,
+      "overhead_ratio_mean": 0.4297863340416079,
+      "evaluation_seconds_mean": 0.0660466346650234,
+      "update_seconds_mean": 0.006249568666741349
+    },
+    {
+      "objective": "rosenbrock",
+      "dimensions": 10,
+      "mode": "numpy",
+      "overhead_seconds_mean": 0.009051717335144835,
+      "overhead_ratio_mean": 0.6154571278686862,
+      "evaluation_seconds_mean": 0.0015824506666225109,
+      "update_seconds_mean": 0.004073139664797054
+    },
+    {
+      "objective": "rosenbrock",
+      "dimensions": 10,
+      "mode": "process",
+      "overhead_seconds_mean": 0.21122795766768832,
+      "overhead_ratio_mean": 0.06306200886074585,
+      "evaluation_seconds_mean": 3.1312344769994525,
+      "update_seconds_mean": 0.0070654583329693805
+    },
+    {
+      "objective": "rosenbrock",
+      "dimensions": 10,
+      "mode": "sequential",
+      "overhead_seconds_mean": 0.02492626033169169,
+      "overhead_ratio_mean": 0.39031186214766384,
+      "evaluation_seconds_mean": 0.026540257667268936,
+      "update_seconds_mean": 0.012395902667776681
+    },
+    {
+      "objective": "rosenbrock",
+      "dimensions": 10,
+      "mode": "thread",
+      "overhead_seconds_mean": 0.04465642700021514,
+      "overhead_ratio_mean": 0.03485127727235999,
+      "evaluation_seconds_mean": 1.2288947453331882,
+      "update_seconds_mean": 0.007791449666607757
+    },
+    {
+      "objective": "rosenbrock",
+      "dimensions": 30,
+      "mode": "asyncio",
+      "overhead_seconds_mean": 0.06561761900108347,
+      "overhead_ratio_mean": 0.44476539213000177,
+      "evaluation_seconds_mean": 0.05687652933223338,
+      "update_seconds_mean": 0.025038956000268325
+    },
+    {
+      "objective": "rosenbrock",
+      "dimensions": 30,
+      "mode": "numpy",
+      "overhead_seconds_mean": 0.02805223366400848,
+      "overhead_ratio_mean": 0.6452134569696796,
+      "evaluation_seconds_mean": 0.002365781335356587,
+      "update_seconds_mean": 0.013059431667291696
+    },
+    {
+      "objective": "rosenbrock",
+      "dimensions": 30,
+      "mode": "process",
+      "overhead_seconds_mean": 0.09842525199868153,
+      "overhead_ratio_mean": 0.039006289403453666,
+      "evaluation_seconds_mean": 2.3935941310016156,
+      "update_seconds_mean": 0.0312980999994276
+    },
+    {
+      "objective": "rosenbrock",
+      "dimensions": 30,
+      "mode": "sequential",
+      "overhead_seconds_mean": 0.008467357000578582,
+      "overhead_ratio_mean": 0.35993966601697247,
+      "evaluation_seconds_mean": 0.0042372833334714715,
+      "update_seconds_mean": 0.010819738332732717
+    },
+    {
+      "objective": "rosenbrock",
+      "dimensions": 30,
+      "mode": "thread",
+      "overhead_seconds_mean": 0.08588558733147995,
+      "overhead_ratio_mean": 0.06312869853767264,
+      "evaluation_seconds_mean": 1.2279373813341106,
+      "update_seconds_mean": 0.04666107933401994
+    },
+    {
+      "objective": "sphere",
+      "dimensions": 2,
+      "mode": "asyncio",
+      "overhead_seconds_mean": 0.06702730666772065,
+      "overhead_ratio_mean": 0.6695899933730822,
+      "evaluation_seconds_mean": 0.027004791332728928,
+      "update_seconds_mean": 0.006069915666254626
+    },
+    {
+      "objective": "sphere",
+      "dimensions": 2,
+      "mode": "numpy",
+      "overhead_seconds_mean": 0.046697955000430134,
+      "overhead_ratio_mean": 0.9560765608685318,
+      "evaluation_seconds_mean": 0.0010443036671858863,
+      "update_seconds_mean": 0.0011010629990172067
+    },
+    {
+      "objective": "sphere",
+      "dimensions": 2,
+      "mode": "process",
+      "overhead_seconds_mean": 0.1059708193327727,
+      "overhead_ratio_mean": 0.0436027274813465,
+      "evaluation_seconds_mean": 2.3178702146666788,
+      "update_seconds_mean": 0.006530308667303568
+    },
+    {
+      "objective": "sphere",
+      "dimensions": 2,
+      "mode": "sequential",
+      "overhead_seconds_mean": 0.019094393000765802,
+      "overhead_ratio_mean": 0.9168125381694544,
+      "evaluation_seconds_mean": 0.00024408099943684647,
+      "update_seconds_mean": 0.0014884586668510262
+    },
+    {
+      "objective": "sphere",
+      "dimensions": 2,
+      "mode": "thread",
+      "overhead_seconds_mean": 0.05536177966556958,
+      "overhead_ratio_mean": 0.08420422091884558,
+      "evaluation_seconds_mean": 0.6003222856649396,
+      "update_seconds_mean": 0.0017862973360630956
+    },
+    {
+      "objective": "sphere",
+      "dimensions": 10,
+      "mode": "asyncio",
+      "overhead_seconds_mean": 0.034637126666590724,
+      "overhead_ratio_mean": 0.3619215506108413,
+      "evaluation_seconds_mean": 0.05428084566665348,
+      "update_seconds_mean": 0.006785438000103265
+    },
+    {
+      "objective": "sphere",
+      "dimensions": 10,
+      "mode": "numpy",
+      "overhead_seconds_mean": 0.015771525998995155,
+      "overhead_ratio_mean": 0.6587695208419309,
+      "evaluation_seconds_mean": 0.002903903667781075,
+      "update_seconds_mean": 0.00526545633359395
+    },
+    {
+      "objective": "sphere",
+      "dimensions": 10,
+      "mode": "process",
+      "overhead_seconds_mean": 0.05149854266498247,
+      "overhead_ratio_mean": 0.021618435321683154,
+      "evaluation_seconds_mean": 2.3073767693334353,
+      "update_seconds_mean": 0.02328333633492245
+    },
+    {
+      "objective": "sphere",
+      "dimensions": 10,
+      "mode": "sequential",
+      "overhead_seconds_mean": 0.011878960001013184,
+      "overhead_ratio_mean": 0.2700175208763465,
+      "evaluation_seconds_mean": 0.0008695199997722133,
+      "update_seconds_mean": 0.03124481333240207
+    },
+    {
+      "objective": "sphere",
+      "dimensions": 10,
+      "mode": "thread",
+      "overhead_seconds_mean": 0.029079470333272184,
+      "overhead_ratio_mean": 0.024545518697841783,
+      "evaluation_seconds_mean": 1.1395143680010733,
+      "update_seconds_mean": 0.016122226998959377
+    },
+    {
+      "objective": "sphere",
+      "dimensions": 30,
+      "mode": "asyncio",
+      "overhead_seconds_mean": 0.055658172666881,
+      "overhead_ratio_mean": 0.3797173657094051,
+      "evaluation_seconds_mean": 0.03671659033291993,
+      "update_seconds_mean": 0.05420313333343074
+    },
+    {
+      "objective": "sphere",
+      "dimensions": 30,
+      "mode": "numpy",
+      "overhead_seconds_mean": 0.020134390332714247,
+      "overhead_ratio_mean": 0.33402169525177294,
+      "evaluation_seconds_mean": 0.0019554983330939044,
+      "update_seconds_mean": 0.03818880166757784
+    },
+    {
+      "objective": "sphere",
+      "dimensions": 30,
+      "mode": "process",
+      "overhead_seconds_mean": 0.10494802166613226,
+      "overhead_ratio_mean": 0.042440601701804914,
+      "evaluation_seconds_mean": 2.334387845667152,
+      "update_seconds_mean": 0.03348538066681309
+    },
+    {
+      "objective": "sphere",
+      "dimensions": 30,
+      "mode": "sequential",
+      "overhead_seconds_mean": 0.09007752366748416,
+      "overhead_ratio_mean": 0.5894090854061522,
+      "evaluation_seconds_mean": 0.002132648334130257,
+      "update_seconds_mean": 0.06061666066489124
+    },
+    {
+      "objective": "sphere",
+      "dimensions": 30,
+      "mode": "thread",
+      "overhead_seconds_mean": 0.03638809866909772,
+      "overhead_ratio_mean": 0.049874201689366265,
+      "evaluation_seconds_mean": 0.6697989820001263,
+      "update_seconds_mean": 0.023410535664273386
+    }
+  ]
+}

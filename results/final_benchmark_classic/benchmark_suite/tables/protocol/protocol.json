@@ -1,0 +1,36 @@
+{
+  "dimensions": [
+    2,
+    10,
+    30
+  ],
+  "modes": [
+    "sequential",
+    "thread",
+    "process",
+    "asyncio",
+    "numpy"
+  ],
+  "seeds": [
+    7,
+    8,
+    9
+  ],
+  "grid_search": {
+    "w": [
+      0.4,
+      0.7,
+      0.9
+    ],
+    "c1": [
+      1.3,
+      1.7,
+      2.1
+    ],
+    "c2": [
+      1.3,
+      1.7,
+      2.1
+    ]
+  }
+}

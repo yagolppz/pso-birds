@@ -1,0 +1,271 @@
+rows:
+  -
+    objective: "wifi_router"
+    dimensions: 3
+    mode: "sequential"
+    repetition: 0
+    seed: 7
+    birds: 12
+    flights: 30
+    best_crumbs: 14.103939349253915
+    best_position:
+      - 0.5239972023756818
+      - -0.026115098069796547
+      - 1.9554946220885367
+    flights_completed: 30
+    total_seconds: 0.04092285400020046
+    evaluation_seconds: 0.0037717429995609564
+    update_seconds: 0.00829902700479579
+    overhead_seconds: 0.028852083995843714
+  -
+    objective: "wifi_router"
+    dimensions: 3
+    mode: "sequential"
+    repetition: 1
+    seed: 8
+    birds: 12
+    flights: 30
+    best_crumbs: 13.97223105779776
+    best_position:
+      - 0.04717911627579438
+      - -0.06921005630458554
+      - 2.00511179647969
+    flights_completed: 30
+    total_seconds: 0.2591316250000091
+    evaluation_seconds: 0.003591456998947251
+    update_seconds: 0.012892840998574684
+    overhead_seconds: 0.24264732700248715
+  -
+    objective: "wifi_router"
+    dimensions: 3
+    mode: "sequential"
+    repetition: 2
+    seed: 9
+    birds: 12
+    flights: 30
+    best_crumbs: 13.975865261847602
+    best_position:
+      - 0.14492960524783968
+      - 0.07676978756736216
+      - 2.004176409220127
+    flights_completed: 30
+    total_seconds: 0.1794445400000768
+    evaluation_seconds: 0.0025031249979292625
+    update_seconds: 0.0028004840005451115
+    overhead_seconds: 0.17414093100160244
+  -
+    objective: "wifi_router"
+    dimensions: 3
+    mode: "thread"
+    repetition: 0
+    seed: 7
+    birds: 12
+    flights: 30
+    best_crumbs: 14.103939349253915
+    best_position:
+      - 0.5239972023756818
+      - -0.026115098069796547
+      - 1.9554946220885367
+    flights_completed: 30
+    total_seconds: 0.9139601389997551
+    evaluation_seconds: 0.8429562499968597
+    update_seconds: 0.0035427550010354025
+    overhead_seconds: 0.06746113400186005
+  -
+    objective: "wifi_router"
+    dimensions: 3
+    mode: "thread"
+    repetition: 1
+    seed: 8
+    birds: 12
+    flights: 30
+    best_crumbs: 13.97223105779776
+    best_position:
+      - 0.04717911627579438
+      - -0.06921005630458554
+      - 2.00511179647969
+    flights_completed: 30
+    total_seconds: 0.766278211000099
+    evaluation_seconds: 0.6766296420073559
+    update_seconds: 0.003639871002633299
+    overhead_seconds: 0.0860086979901098
+  -
+    objective: "wifi_router"
+    dimensions: 3
+    mode: "thread"
+    repetition: 2
+    seed: 9
+    birds: 12
+    flights: 30
+    best_crumbs: 13.975865261847602
+    best_position:
+      - 0.14492960524783968
+      - 0.07676978756736216
+      - 2.004176409220127
+    flights_completed: 30
+    total_seconds: 1.6694796719993974
+    evaluation_seconds: 1.5841536119933153
+    update_seconds: 0.0039382139993904275
+    overhead_seconds: 0.08138784600669169
+  -
+    objective: "wifi_router"
+    dimensions: 3
+    mode: "process"
+    repetition: 0
+    seed: 7
+    birds: 12
+    flights: 30
+    best_crumbs: 14.103939349253915
+    best_position:
+      - 0.5239972023756818
+      - -0.026115098069796547
+      - 1.9554946220885367
+    flights_completed: 30
+    total_seconds: 2.5109131639992484
+    evaluation_seconds: 2.3892515219977213
+    update_seconds: 0.01071580899952096
+    overhead_seconds: 0.11094583300200611
+  -
+    objective: "wifi_router"
+    dimensions: 3
+    mode: "process"
+    repetition: 1
+    seed: 8
+    birds: 12
+    flights: 30
+    best_crumbs: 13.97223105779776
+    best_position:
+      - 0.04717911627579438
+      - -0.06921005630458554
+      - 2.00511179647969
+    flights_completed: 30
+    total_seconds: 5.1093443359995945
+    evaluation_seconds: 4.803005793997727
+    update_seconds: 0.007412382997245004
+    overhead_seconds: 0.2989261590046226
+  -
+    objective: "wifi_router"
+    dimensions: 3
+    mode: "process"
+    repetition: 2
+    seed: 9
+    birds: 12
+    flights: 30
+    best_crumbs: 13.975865261847602
+    best_position:
+      - 0.14492960524783968
+      - 0.07676978756736216
+      - 2.004176409220127
+    flights_completed: 30
+    total_seconds: 4.376896932999443
+    evaluation_seconds: 4.212927911002225
+    update_seconds: 0.03115930899821251
+    overhead_seconds: 0.13280971299900557
+  -
+    objective: "wifi_router"
+    dimensions: 3
+    mode: "asyncio"
+    repetition: 0
+    seed: 7
+    birds: 12
+    flights: 30
+    best_crumbs: 14.103939349253915
+    best_position:
+      - 0.5239972023756818
+      - -0.026115098069796547
+      - 1.9554946220885367
+    flights_completed: 30
+    total_seconds: 0.05318817900024442
+    evaluation_seconds: 0.026483578994884738
+    update_seconds: 0.0027925869981118012
+    overhead_seconds: 0.02391201300724788
+  -
+    objective: "wifi_router"
+    dimensions: 3
+    mode: "asyncio"
+    repetition: 1
+    seed: 8
+    birds: 12
+    flights: 30
+    best_crumbs: 13.97223105779776
+    best_position:
+      - 0.04717911627579438
+      - -0.06921005630458554
+      - 2.00511179647969
+    flights_completed: 30
+    total_seconds: 0.35108705800030293
+    evaluation_seconds: 0.109042072000193
+    update_seconds: 0.008485806000862794
+    overhead_seconds: 0.23355917999924714
+  -
+    objective: "wifi_router"
+    dimensions: 3
+    mode: "asyncio"
+    repetition: 2
+    seed: 9
+    birds: 12
+    flights: 30
+    best_crumbs: 13.975865261847602
+    best_position:
+      - 0.14492960524783968
+      - 0.07676978756736216
+      - 2.004176409220127
+    flights_completed: 30
+    total_seconds: 0.16278073800003767
+    evaluation_seconds: 0.029413744002340536
+    update_seconds: 0.002862490997358691
+    overhead_seconds: 0.13050450300033845
+  -
+    objective: "wifi_router"
+    dimensions: 3
+    mode: "numpy"
+    repetition: 0
+    seed: 7
+    birds: 12
+    flights: 30
+    best_crumbs: 14.103939349253915
+    best_position:
+      - 0.5239972023756818
+      - -0.026115098069796547
+      - 1.9554946220885367
+    flights_completed: 30
+    total_seconds: 0.12944611800048733
+    evaluation_seconds: 0.05068131600091874
+    update_seconds: 0.00312080200183118
+    overhead_seconds: 0.07564399999773741
+  -
+    objective: "wifi_router"
+    dimensions: 3
+    mode: "numpy"
+    repetition: 1
+    seed: 8
+    birds: 12
+    flights: 30
+    best_crumbs: 13.97223105779776
+    best_position:
+      - 0.04717911627579438
+      - -0.06921005630458554
+      - 2.00511179647969
+    flights_completed: 30
+    total_seconds: 0.10204381699986698
+    evaluation_seconds: 0.04045983699779754
+    update_seconds: 0.0042550259986455785
+    overhead_seconds: 0.05732895400342386
+  -
+    objective: "wifi_router"
+    dimensions: 3
+    mode: "numpy"
+    repetition: 2
+    seed: 9
+    birds: 12
+    flights: 30
+    best_crumbs: 13.975865261847602
+    best_position:
+      - 0.14492960524783968
+      - 0.07676978756736216
+      - 2.004176409220127
+    flights_completed: 30
+    total_seconds: 0.08395337399997516
+    evaluation_seconds: 0.012895348998426925
+    update_seconds: 0.002534111001295969
+    overhead_seconds: 0.06852391400025226

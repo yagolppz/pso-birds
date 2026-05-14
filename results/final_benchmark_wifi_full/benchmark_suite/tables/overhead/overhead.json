@@ -1,0 +1,49 @@
+{
+  "rows": [
+    {
+      "objective": "wifi_router",
+      "dimensions": 3,
+      "mode": "asyncio",
+      "overhead_seconds_mean": 0.12932523200227783,
+      "overhead_ratio_mean": 0.684192942339481,
+      "evaluation_seconds_mean": 0.05497979833247276,
+      "update_seconds_mean": 0.0047136279987777625
+    },
+    {
+      "objective": "wifi_router",
+      "dimensions": 3,
+      "mode": "numpy",
+      "overhead_seconds_mean": 0.06716562266713784,
+      "overhead_ratio_mean": 0.6387736314330987,
+      "evaluation_seconds_mean": 0.03467883399904773,
+      "update_seconds_mean": 0.0033033130005909093
+    },
+    {
+      "objective": "wifi_router",
+      "dimensions": 3,
+      "mode": "process",
+      "overhead_seconds_mean": 0.18089390166854477,
+      "overhead_ratio_mean": 0.045234201829809174,
+      "evaluation_seconds_mean": 3.8017284089992245,
+      "update_seconds_mean": 0.016429166998326156
+    },
+    {
+      "objective": "wifi_router",
+      "dimensions": 3,
+      "mode": "sequential",
+      "overhead_seconds_mean": 0.14854678066664442,
+      "overhead_ratio_mean": 0.9293873904665217,
+      "evaluation_seconds_mean": 0.00328877499881249,
+      "update_seconds_mean": 0.007997450667971862
+    },
+    {
+      "objective": "wifi_router",
+      "dimensions": 3,
+      "mode": "thread",
+      "overhead_seconds_mean": 0.0782858926662205,
+      "overhead_ratio_mean": 0.07011267111328034,
+      "evaluation_seconds_mean": 1.0345798346658437,
+      "update_seconds_mean": 0.0037069466676863763
+    }
+  ]
+}

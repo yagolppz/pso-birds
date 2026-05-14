@@ -1,0 +1,6 @@
+objective,dimensions,mode,speedup_vs_sequential,total_seconds_mean
+wifi_router,3,asyncio,0.8455938040328235,0.18901865833352835
+wifi_router,3,numpy,1.5200798537140172,0.10514776966677648
+wifi_router,3,process,0.039967729154291774,3.9990514776660953
+wifi_router,3,sequential,1.0,0.15983300633342878
+wifi_router,3,thread,0.14314608449164365,1.1165726739997506

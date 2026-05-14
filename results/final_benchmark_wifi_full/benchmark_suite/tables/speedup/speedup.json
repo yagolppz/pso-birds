@@ -1,0 +1,39 @@
+{
+  "rows": [
+    {
+      "objective": "wifi_router",
+      "dimensions": 3,
+      "mode": "asyncio",
+      "speedup_vs_sequential": 0.8455938040328235,
+      "total_seconds_mean": 0.18901865833352835
+    },
+    {
+      "objective": "wifi_router",
+      "dimensions": 3,
+      "mode": "numpy",
+      "speedup_vs_sequential": 1.5200798537140172,
+      "total_seconds_mean": 0.10514776966677648
+    },
+    {
+      "objective": "wifi_router",
+      "dimensions": 3,
+      "mode": "process",
+      "speedup_vs_sequential": 0.039967729154291774,
+      "total_seconds_mean": 3.9990514776660953
+    },
+    {
+      "objective": "wifi_router",
+      "dimensions": 3,
+      "mode": "sequential",
+      "speedup_vs_sequential": 1.0,
+      "total_seconds_mean": 0.15983300633342878
+    },
+    {
+      "objective": "wifi_router",
+      "dimensions": 3,
+      "mode": "thread",
+      "speedup_vs_sequential": 0.14314608449164365,
+      "total_seconds_mean": 1.1165726739997506
+    }
+  ]
+}
