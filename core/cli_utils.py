@@ -27,6 +27,7 @@ def add_common_pso_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--lower-bound", type=float, default=None)
     parser.add_argument("--upper-bound", type=float, default=None)
     parser.add_argument("--stop-when-crumbs-below", type=float, default=None)
+    parser.add_argument("--stop-after-stagnant-flights", type=int, default=None)    
     parser.add_argument("--velocity-limit-factor", type=float, default=0.2)
 
 
@@ -41,6 +42,7 @@ def build_swarm_config_from_args(arguments: argparse.Namespace) -> SwarmConfig:
         social_weight=arguments.c2,
         random_seed=arguments.seed,
         stop_when_crumbs_below=arguments.stop_when_crumbs_below,
+        stop_after_stagnant_flights=arguments.stop_after_stagnant_flights,
         velocity_limit_factor=arguments.velocity_limit_factor,
     )
 
