@@ -37,6 +37,7 @@ En la Entrega 2 tambien se incluyen carpetas finales especificas para los result
 
 - `results/final_benchmark_classic/`
 - `results/final_benchmark_wifi_full/`
+- `results/final_grid_search/`
 - `results/final_rastrigin_viz/`
 - `results/final_wifi_viz/`
 
