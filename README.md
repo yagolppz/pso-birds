@@ -224,6 +224,7 @@ En la Entrega 2, los resultados finales se han dejado separados en carpetas espe
 - `results/final_benchmark_wifi_full/`: benchmark completo del caso de uso `wifi_router`.
 - `results/final_rastrigin_viz/`: visualizacion final sobre `rastrigin`.
 - `results/final_wifi_viz/`: visualizacion final del caso de uso WiFi.
+- `results/final_grid_search/`: resultados finales del grid search reducido sobre hiperparametros del PSO.
 
 Las carpetas de benchmark incluyen, entre otros artefactos:
 
