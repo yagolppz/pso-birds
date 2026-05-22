@@ -340,7 +340,19 @@ La interpretacion general debe hacerse considerando:
 
 Por este motivo, el analisis final no se centra solo en encontrar la estrategia mas rapida, sino en explicar bajo que condiciones cada estrategia resulta conveniente.
 
-## 14. Limitaciones y trabajo futuro
+## 14. Nota sobre la nomenclatura PSO-Birds
+
+La nomenclatura PSO-Birds se utiliza como una abstracción conceptual y visual para facilitar la interpretación del algoritmo. No modifica el comportamiento matemático del PSO canónico. Los conceptos estándar se mantienen: partículas, posiciones, velocidades, pBest, gBest, fitness y función objetivo.
+
+La analogía traduce únicamente algunos términos internos del proyecto: `birds` para partículas, `flights` para iteraciones y `crumbs` para fitness. Su objetivo es hacer más legible el sistema y facilitar las visualizaciones, no sustituir la formulación técnica del algoritmo.
+
+## 15. Nota sobre asyncio y NumPy
+
+La variante `asyncio` se incluye como modelo de concurrencia cooperativa. Su utilidad principal aparece en escenarios con latencia, esperas o evaluaciones asimétricas. En benchmarks CPU-bound no se espera necesariamente que supere a la versión secuencial, por lo que su análisis se centra en el coste de coordinación y en el tipo de carga para el que resulta adecuada.
+
+La variante `numpy` se interpreta como vectorización numérica de la evaluación del fitness. No se presenta como paralelismo clásico con hilos o procesos, sino como una forma de reducir bucles Python y aprovechar operaciones optimizadas sobre arrays.
+
+## 16. Limitaciones y trabajo futuro
 
 Aunque el proyecto cubre los requisitos principales de la Entrega 2, se han dejado algunas extensiones como trabajo futuro:
 
@@ -353,7 +365,7 @@ Aunque el proyecto cubre los requisitos principales de la Entrega 2, se han deja
 
 Estas extensiones no son necesarias para demostrar el objetivo central de la practica, pero servirian para ampliar el proyecto hacia una herramienta experimental mas completa.
 
-## 15. Estado final de validacion
+## 17. Estado final de validacion
 
 La validacion final de la rama `feature/entrega2-final` se realizo ejecutando:
 
